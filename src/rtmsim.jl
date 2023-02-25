@@ -281,35 +281,35 @@ module rtmsim
  
         #License statement
         print("\n")
-        print("RTMsim version 0.2 \n")
-        print("RTMsim is Julia code with GUI which simulates the mold filling in Liquid Composite Molding (LCM) manufacturing process. \n")
-        print("Copyright (C) 2022 Christof Obertscheider / University of Applied Sciences Wiener Neustadt (FHWN)  \n")
-        print("\n")
-        print("This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \n")
-        print("\n")
-        print("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. \n")
-        print("\n")
-        print("You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.\n")
-        print("\n")
-        print("This software is free of charge and may be used for commercial and academic purposes.  Please mention the use of this software at an appropriate place in your work. \n")
-        print("\n")
-        print("Submit bug reports to christof.obertscheider@fhwn.ac.at \n")
-        print("\n")
+        println("RTMsim version 0.2")
+        println("RTMsim is Julia code with GUI which simulates the mold filling in Liquid Composite Molding (LCM) manufacturing process.")
+        println("Copyright (C) 2022 Christof Obertscheider / University of Applied Sciences Wiener Neustadt (FHWN)")
+        println("")
+        println("This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.")
+        println("")
+        println("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.")
+        println("")
+        println("You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.")
+        println("")
+        println("This software is free of charge and may be used for commercial and academic purposes.  Please mention the use of this software at an appropriate place in your work.")
+        println("")
+        println("Submit bug reports to christof.obertscheider@fhwn.ac.at")
+        println("")
 
         #Output simulation parameter overview
-        print("\n")
-        print("RTMsim started with the following parameters:\n")
-        print("i_model=",i_model,"\n")
+        println("")
+        println("RTMsim started with the following parameters:")
+        println("i_model=$(i_model)")
             if i_model!=1
                 errorstring="Only iso-thermal RTM implemented, i.e. i_model must be =1 instead of = $(i_model)\n"
                 error(errorstring)
             end
-        print("meshfilename=",meshfilename,"\n")
+        println("meshfilename=$(meshfilename)")
             if ~isfile(meshfilename)
                 errorstring="File $(meshfilename) not existing\n"
                 error(errorstring);
             end
-        print("tmax=",string(tmax),"\n")
+        println("tmax=$(tmax)")
             if tmax<=0.0
                 errorstring="tmax must be greater than zero"
                 error(errorstring)
@@ -332,17 +332,17 @@ module rtmsim
             end
             n_pics=Int64(n_pics)
         if n_pics_input!=n_pics
-            print("n_pics changed to n_pics=$(n_pics)\n")
+            println("n_pics changed to n_pics=$(n_pics)")
         else
-            print("n_pics=$(n_pics)\n")
+            println("n_pics=$(n_pics)")
         end
-        print("i_interactive=$(i_interactive)\n")
+        println("i_interactive=$(i_interactive)")
             if i_interactive!=0 && i_interactive!=1 && i_interactive!=2
                 errorstring="Wrong value for i_interactive (must be=0,1,2)"
                 error(errorstring)
             end 
         if i_restart==1
-            println("i_restart,restartfilename=$(i_restart), restartfilename,") 
+            println("i_restart, restartfilename=$(i_restart)") 
             if i_restart!=0 && i_restart!=1
                 errorstring="Wrong value for i_restart (must be=0,1)"
                 error(errorstring)
@@ -352,12 +352,12 @@ module rtmsim
                 error(errorstring);
             end
         end
-        println("p_ref,rho_ref,gamma,mu=$(p_ref), string(rho_ref), string(gamma),string(mu_resin_val)")
+        println("p_ref,rho_ref,gamma,mu=$(p_ref), $(rho_ref), $(gamma), $(mu_resin_val)")
         if p_ref<=0.0 || rho_ref<=0.0 || gamma<1.0 || mu_resin_val<=0.0
             errorstring="Wrong value for p_ref,rho_ref,gamma,mu (must be >0.0,>0.0,>1.0,>0.0)"
             error(errorstring)
         end 
-        println("p_a_val,p_init_val=$(p_a_val), string(p_init_val),")
+        println("p_a_val,p_init_val=$(p_a_val), $(p_init_val)")
             if p_a_val<=p_init_val
                 errorstring="Injection pressure must be greater than initial pressure"
                 error(errorstring)
@@ -382,7 +382,7 @@ module rtmsim
         if i_restart==1
             cp("restart.jdl2",restartfilename;force=true)
         end
-        n_out=Int64(0)
+        n_out=0.0
 
         #Assign and prepare physical parameters
         refdir_val=[refdir1_val,refdir2_val,refdir3_val]  #Vector
@@ -394,28 +394,28 @@ module rtmsim
         v_init=0.0 
         p_a=p_a_val
         p_init=p_init_val
-        p_b=p_a_val;
+        p_b=p_a_val
         #Normalization for Delta p: p->p-p_init
-            p_eps=Float64(0.001e5); #Float64(0.000e5);  #
-            p_a=p_a-p_init+p_eps;
-            p_init=p_init-p_init+p_eps;
-            p_b=p_a-p_init+p_eps;
-            p_ref=p_ref;  #p_ref-p_init+p_eps;
-        kappa=p_ref/(rho_ref^gamma);
+            p_eps=100.0 #Float64(0.000e5); 
+            p_a-=p_init+p_eps
+            p_init=p_eps
+            p_b=p_a-p_init+p_eps
+            # p_ref=p_ref;  #p_ref-p_init+p_eps;
+        kappa=p_ref/(rho_ref^gamma)
         #Lookuptable for adiabatic law (required for stability)
-            p_int1=Float64(0.0e5); rho_int1=(p_int1/kappa)^(1/gamma);
-            p_int2=Float64(0.1e5); rho_int2=(p_int2/kappa)^(1/gamma);
-            p_int3=Float64(0.5e5); rho_int3=(p_int3/kappa)^(1/gamma);
-            p_int4=Float64(1.0e5); rho_int4=(p_int4/kappa)^(1/gamma);
-            p_int5=Float64(10.0e5); rho_int5=(p_int5/kappa)^(1/gamma);
-            p_int6=Float64(100.0e5); rho_int6=(p_int6/kappa)^(1/gamma);
-            A=[rho_int1^2 rho_int1 Float64(1.0); rho_int3^2 rho_int3 Float64(1.0); rho_int4^2 rho_int4 Float64(1.0)];
-            b=[p_int1;p_int3;p_int4];
-            apvals=A\b;
+            p_int1=0.0; rho_int1=(p_int1/kappa)^(1/gamma)
+            p_int2=10000.0; rho_int2=(p_int2/kappa)^(1/gamma)
+            p_int3=0.5e5; rho_int3=(p_int3/kappa)^(1/gamma)
+            p_int4=1.0e5; rho_int4=(p_int4/kappa)^(1/gamma)
+            p_int5=1.0e6; rho_int5=(p_int5/kappa)^(1/gamma)
+            p_int6=1.0e7; rho_int6=(p_int6/kappa)^(1/gamma)
+            A=[rho_int1^2 rho_int1 1.0; rho_int3^2 rho_int3 1.0; rho_int4^2 rho_int4 1.0]
+            b=[p_int1;p_int3;p_int4]
+            apvals=A\b
             ap1=apvals[1];ap2=apvals[2];ap3=apvals[3];
-        rho_a=(p_a/kappa)^(Float64(1)/gamma);
-        rho_b=(p_b/kappa)^(Float64(1)/gamma);
-        rho_init=(p_init/kappa)^(Float64(1)/gamma);
+        rho_a=(p_a/kappa)^(1/gamma)
+        rho_b=(p_b/kappa)^(1/gamma)
+        rho_init=(p_init/kappa)^(1/gamma)
 
         if gamma>=100;  #insert here coefficients for an incompressible EOS with resin mass density as rho_ref 
                         #at p_b and 0.9*rho_ref at p_a but the EOS is for deltap and consequently normalized pressure values
@@ -426,50 +426,50 @@ module rtmsim
             #rho_b=p_b/ap2-ap3/ap2;
             #rho_init=p_init/ap2-ap3/ap2;
 
-            rho_a=rho_ref;
-            rho_b=rho_a;
-            rho_init=0.0;
-            p_int1=p_init; rho_int1=rho_init;
-            p_int2=p_init+0.9*(p_a-p_init); rho_int2=0.1*rho_a;
-            p_int3=p_a; rho_int3=rho_a;
+            rho_a=rho_ref
+            rho_b=rho_a
+            rho_init=0.0
+            p_int1=p_init; rho_int1=rho_init
+            p_int2=p_init+0.9*(p_a-p_init); rho_int2=0.1*rho_a
+            p_int3=p_a; rho_int3=rho_a
             #A=[rho_int1^2 rho_int1 Float64(1.0); rho_int2^2 rho_int2 Float64(1.0); rho_int3^2 rho_int3 Float64(1.0)];
             #b=[p_int1;p_int2;p_int3];
-            A=[rho_int1^2 rho_int1 Float64(1.0); rho_int3^2 rho_int3 Float64(1.0); 2*rho_int3 Float64(1.0) 0];
-            b=[p_int1;p_int3;Float64(0.0)];
-            apvals=A\b;
-            ap1=apvals[1];ap2=apvals[2];ap3=apvals[3];
+            A=[rho_int1^2 rho_int1 1.0; rho_int3^2 rho_int3 1.0; 2*rho_int3 1.0 0]
+            b=[p_int1;p_int3;Float64(0.0)]
+            apvals=A\b
+            ap1=apvals[1];ap2=apvals[2];ap3=apvals[3]
             #ap1*rho_new[ind]^2+ap2*rho_new[ind]+ap3;
 
 
-            print(string("rho_int1: ",string(rho_int1) , "\n" ) );
-            print(string("rho_int2: ",string(rho_int2) , "\n" ) );
-            print(string("rho_int3: ",string(rho_int3) , "\n" ) );
-            print(string("p_int1: ",string(p_int1) , "\n" ) );
-            print(string("p_int2: ",string(p_int2) , "\n" ) );
-            print(string("p_int3: ",string(p_int3) , "\n" ) );
+            println("rho_int1: $(rho_int1)")
+            println("rho_int2: $(rho_int2)")
+            println("rho_int3: $(rho_int3)")
+            println("p_int1: $(p_int1)")
+            println("p_int2: $(p_int2)")
+            println("p_int3: $(p_int3)")
             
-            print(string("ap1: ",string(ap1) , "\n" ) );
-            print(string("ap2: ",string(ap2) , "\n" ) ); 
-            print(string("ap3: ",string(ap3) , "\n" ) ); 
-            print(string("p_a: ",string(p_a) , "\n" ) );
-            print(string("p_b: ",string(p_b) , "\n" ) );
-            print(string("p_init: ",string(p_init) , "\n" ) );
-            print(string("rho_a: ",string(rho_a) , "\n" ) );
-            print(string("rho_b: ",string(rho_b) , "\n" ) );
-            print(string("rho_init: ",string(rho_init) , "\n" ) );
+            println("ap1: $(ap1)")
+            println("ap2: $(ap2)") 
+            println("ap3: $(ap3)") 
+            println("p_a: $(p_a)")
+            println("p_b: $(p_b)")
+            println("p_init: $(p_init)")
+            println("rho_a: $(rho_a)")
+            println("rho_b: $(rho_b)")
+            println("rho_init: $(rho_init)")
         end
         
-        T_a=Float64(295);
-        T_b=Float64(295);
-        T_init=Float64(295);
-        gamma_a=Float64(1.0);
-        gamma_b=Float64(1.0);    
-        gamma_init=Float64(0.0);
-        paramset=[porosity_val,t_val,K_val,alpha_val,refdir1_val,refdir2_val,refdir3_val];
-        paramset1=[porosity1_val,t1_val,K1_val,alpha1_val,refdir11_val,refdir21_val,refdir31_val];
-        paramset2=[porosity2_val,t2_val,K2_val,alpha2_val,refdir12_val,refdir22_val,refdir32_val];
-        paramset3=[porosity3_val,t3_val,K3_val,alpha3_val,refdir13_val,refdir23_val,refdir33_val];
-        paramset4=[porosity4_val,t4_val,K4_val,alpha4_val,refdir14_val,refdir24_val,refdir34_val];
+        T_a=295.0
+        T_b=295.0
+        T_init=295.0
+        gamma_a=1.0
+        gamma_b=1.0    
+        gamma_init=0.0
+        paramset=[porosity_val,t_val,K_val,alpha_val,refdir1_val,refdir2_val,refdir3_val]
+        paramset1=[porosity1_val,t1_val,K1_val,alpha1_val,refdir11_val,refdir21_val,refdir31_val]
+        paramset2=[porosity2_val,t2_val,K2_val,alpha2_val,refdir12_val,refdir22_val,refdir32_val]
+        paramset3=[porosity3_val,t3_val,K3_val,alpha3_val,refdir13_val,refdir23_val,refdir33_val]
+        paramset4=[porosity4_val,t4_val,K4_val,alpha4_val,refdir14_val,refdir24_val,refdir34_val]
 
 
         #--------------------------------------------------------------------------
