@@ -62,100 +62,102 @@ module rtmsim
             inputfilename=replace(inputfilename,"\\" => "/")
         end        
         print("Read input file "*string(inputfilename)*"\n")
-        if ~isfile(inputfilename);
-            errorstring=string("File ",inputfilename," not existing"* "\n"); 
-            error(errorstring);
+        if ~isfile(inputfilename)
+            errorstring=string("File ",inputfilename," not existing"* "\n")
+            error(errorstring)
         end
-        i_model=[]; meshfilename=[]; tmax=[]; 
-        p_ref=[]; rho_ref=[]; gamma=[]; mu_resin_val=[]; p_a_val=[]; p_init_val=[]; 
-        t_val=[]; porosity_val=[]; K_val=[]; alpha_val=[]; refdir1_val=[]; refdir2_val=[]; refdir3_val=[]; 
-        t1_val=[]; porosity1_val=[]; K1_val=[]; alpha1_val=[]; refdir11_val=[]; refdir21_val=[]; refdir31_val=[]; 
-        t2_val=[]; porosity2_val=[]; K2_val=[]; alpha2_val=[]; refdir12_val=[]; refdir22_val=[]; refdir32_val=[]; 
-        t3_val=[]; porosity3_val=[]; K3_val=[]; alpha3_val=[]; refdir13_val=[]; refdir23_val=[]; refdir33_val=[]; 
-        t4_val=[]; porosity4_val=[]; K4_val=[]; alpha4_val=[]; refdir14_val=[]; refdir24_val=[]; refdir34_val=[];
-        patchtype1val=[]; patchtype2val=[]; patchtype3val=[]; patchtype4val=[]; 
-        i_restart=[]; restartfilename=[]; i_interactive=[]; r_p=[]; n_pics=[];
+        i_model=[]; meshfilename=[]; tmax=[]
+        p_ref=[]; rho_ref=[]; gamma=[]; mu_resin_val=[]; p_a_val=[]; p_init_val=[]
+        t_val=[]; porosity_val=[]; K_val=[]; alpha_val=[]; refdir1_val=[]; refdir2_val=[]; refdir3_val=[]
+        t1_val=[]; porosity1_val=[]; K1_val=[]; alpha1_val=[]; refdir11_val=[]; refdir21_val=[]; refdir31_val=[]
+        t2_val=[]; porosity2_val=[]; K2_val=[]; alpha2_val=[]; refdir12_val=[]; refdir22_val=[]; refdir32_val=[]
+        t3_val=[]; porosity3_val=[]; K3_val=[]; alpha3_val=[]; refdir13_val=[]; refdir23_val=[]; refdir33_val=[]
+        t4_val=[]; porosity4_val=[]; K4_val=[]; alpha4_val=[]; refdir14_val=[]; refdir24_val=[]; refdir34_val=[]
+        patchtype1val=[]; patchtype2val=[]; patchtype3val=[]; patchtype4val=[]
+        i_restart=[]; restartfilename=[]; i_interactive=[]; r_p=[]; n_pics=[]
         open(inputfilename, "r") do fid
-            i_line=1;
+            i_line=1
             while !eof(fid)
                 thisline=readline(fid)
                 print(string(thisline)*"\n")
                 txt1=split(thisline," ")
-                if i_line==1;            
-                    i_model=parse(Int64,txt1[1]);
-                elseif i_line==2;
-                    meshfilename=txt1[1];
+                if i_line==1            
+                    i_model=parse(Int64,txt1[1])
+                elseif i_line==2
+                    meshfilename=txt1[1]
                     if Sys.iswindows()
                         meshfilename=replace(meshfilename,"/" => "\\")
                     elseif Sys.islinux()
                         meshfilename=replace(meshfilename,"\\" => "/")
                     end  
-                elseif i_line==3;
-                    tmax=parse(Float64,txt1[1]);
-                elseif i_line==4;
-                    p_ref=parse(Float64,txt1[1]);
-                    rho_ref=parse(Float64,txt1[2]);
-                    gamma=parse(Float64,txt1[3]);
-                    mu_resin_val=parse(Float64,txt1[4]);
-                elseif i_line==5;
-                    p_a_val=parse(Float64,txt1[1]);
-                    p_init_val=parse(Float64,txt1[2]);
-                elseif i_line==6;
-                    t_val=parse(Float64,txt1[1]);
-                    porosity_val=parse(Float64,txt1[2]);
-                    K_val=parse(Float64,txt1[3]);
-                    alpha_val=parse(Float64,txt1[4]);
-                    refdir1_val=parse(Float64,txt1[5]);
-                    refdir2_val=parse(Float64,txt1[6]);
-                    refdir3_val=parse(Float64,txt1[7]);
-                elseif i_line==7;
-                    t1_val=parse(Float64,txt1[1]);
-                    porosity1_val=parse(Float64,txt1[2]);
-                    K1_val=parse(Float64,txt1[3]);
-                    alpha1_val=parse(Float64,txt1[4]);
-                    refdir11_val=parse(Float64,txt1[5]);
-                    refdir21_val=parse(Float64,txt1[6]);
-                    refdir31_val=parse(Float64,txt1[7]);
-                elseif i_line==8;
-                    t2_val=parse(Float64,txt1[1]);
-                    porosity2_val=parse(Float64,txt1[2]);
-                    K2_val=parse(Float64,txt1[3]);
-                    alpha2_val=parse(Float64,txt1[4]);
-                    refdir12_val=parse(Float64,txt1[5]);
-                    refdir22_val=parse(Float64,txt1[6]);
-                    refdir32_val=parse(Float64,txt1[7]);
-                elseif i_line==9;            
-                    t3_val=parse(Float64,txt1[1]);
-                    porosity3_val=parse(Float64,txt1[2]);
-                    K3_val=parse(Float64,txt1[3]);
-                    alpha3_val=parse(Float64,txt1[4]);
-                    refdir13_val=parse(Float64,txt1[5]);
-                    refdir23_val=parse(Float64,txt1[6]);
-                    refdir33_val=parse(Float64,txt1[7]);
-                elseif i_line==10;
-                    t4_val=parse(Float64,txt1[1]);
-                    porosity4_val=parse(Float64,txt1[2]);
-                    K4_val=parse(Float64,txt1[3]);
-                    alpha4_val=parse(Float64,txt1[4]);
-                    refdir14_val=parse(Float64,txt1[5]);
-                    refdir24_val=parse(Float64,txt1[6]);
-                    refdir34_val=parse(Float64,txt1[7]);
-                elseif i_line==11;
-                    patchtype1val=parse(Int64,txt1[1]);
-                    patchtype2val=parse(Int64,txt1[2]);
-                    patchtype3val=parse(Int64,txt1[3]);
-                    patchtype4val=parse(Int64,txt1[4]);
-                elseif i_line==12;
-                    i_restart=parse(Int64,txt1[1]);
-                    restartfilename=txt1[2];
-                elseif i_line==13;
-                    i_interactive=parse(Int64,txt1[1]);
-                    r_p= parse(Float64,txt1[2]);
-                elseif i_line==14;
-                    n_pics=parse(Int64,txt1[1]);
+                elseif i_line==3
+                    tmax=parse(Float64,txt1[1])
+                elseif i_line==4
+                    p_ref=parse(Float64,txt1[1])
+                    rho_ref=parse(Float64,txt1[2])
+                    gamma=parse(Float64,txt1[3])
+                    mu_resin_val=parse(Float64,txt1[4])
+                elseif i_line==5
+                    p_a_val=parse(Float64,txt1[1])
+                    p_init_val=parse(Float64,txt1[2])
+                elseif i_line==6
+                    t_val=parse(Float64,txt1[1])
+                    porosity_val=parse(Float64,txt1[2])
+                    K_val=parse(Float64,txt1[3])
+                    alpha_val=parse(Float64,txt1[4])
+                    refdir1_val=parse(Float64,txt1[5])
+                    refdir2_val=parse(Float64,txt1[6])
+                    refdir3_val=parse(Float64,txt1[7])
+                elseif i_line==7
+                    t1_val=parse(Float64,txt1[1])
+                    porosity1_val=parse(Float64,txt1[2])
+                    K1_val=parse(Float64,txt1[3])
+                    alpha1_val=parse(Float64,txt1[4])
+                    refdir11_val=parse(Float64,txt1[5])
+                    refdir21_val=parse(Float64,txt1[6])
+                    refdir31_val=parse(Float64,txt1[7])
+                elseif i_line==8
+                    t2_val=parse(Float64,txt1[1])
+                    porosity2_val=parse(Float64,txt1[2])
+                    K2_val=parse(Float64,txt1[3])
+                    alpha2_val=parse(Float64,txt1[4])
+                    refdir12_val=parse(Float64,txt1[5])
+                    refdir22_val=parse(Float64,txt1[6])
+                    refdir32_val=parse(Float64,txt1[7])
+                elseif i_line==9        
+                    t3_val=parse(Float64,txt1[1])
+                    porosity3_val=parse(Float64,txt1[2])
+                    K3_val=parse(Float64,txt1[3])
+                    alpha3_val=parse(Float64,txt1[4])
+                    refdir13_val=parse(Float64,txt1[5])
+                    refdir23_val=parse(Float64,txt1[6])
+                    refdir33_val=parse(Float64,txt1[7])
+                elseif i_line==10
+                    t4_val=parse(Float64,txt1[1])
+                    porosity4_val=parse(Float64,txt1[2])
+                    K4_val=parse(Float64,txt1[3])
+                    alpha4_val=parse(Float64,txt1[4])
+                    refdir14_val=parse(Float64,txt1[5])
+                    refdir24_val=parse(Float64,txt1[6])
+                    refdir34_val=parse(Float64,txt1[7])
+                elseif i_line==11
+                    patchtype1val=parse(Int64,txt1[1])
+                    patchtype2val=parse(Int64,txt1[2])
+                    patchtype3val=parse(Int64,txt1[3])
+                    patchtype4val=parse(Int64,txt1[4])
+                elseif i_line==12
+                    i_restart=parse(Int64,txt1[1])
+                    restartfilename=txt1[2]
+                elseif i_line==13
+                    i_interactive=parse(Int64,txt1[1])
+                    r_p= parse(Float64,txt1[2])
+                elseif i_line==14
+                    n_pics=parse(Int64,txt1[1])
                 end
-                i_line=i_line+1;
-                if i_line==15;break;end
+                i_line=i_line+1
+                if i_line==15
+                    break
+                end
             end
         end        
         print(" "*"\n")
@@ -167,7 +169,7 @@ module rtmsim
             t2_val,porosity2_val,K2_val,alpha2_val,refdir12_val,refdir22_val,refdir32_val,
             t3_val,porosity3_val,K3_val,alpha3_val,refdir13_val,refdir23_val,refdir33_val,
             t4_val,porosity4_val,K4_val,alpha4_val,refdir14_val,refdir24_val,refdir34_val,
-            patchtype1val,patchtype2val,patchtype3val,patchtype4val,i_restart,restartfilename,i_interactive,r_p,n_pics);
+            patchtype1val,patchtype2val,patchtype3val,patchtype4val,i_restart,restartfilename,i_interactive,r_p,n_pics)
     end
 
     """
@@ -266,97 +268,97 @@ module rtmsim
         #----------------------------------------------------------------------
         
         # Well defined variable types, except for strings meshfilename,restartfilename
-        tmax=Float64(tmax);
-        p_ref=Float64(p_ref);rho_ref=Float64(rho_ref);gamma=Float64(gamma);mu_resin_val=Float64(mu_resin_val);
-        p_a_val=Float64(p_a_val);p_init_val=Float64(p_init_val);
-        t_val=Float64(t_val);porosity_val=Float64(porosity_val);K_val=Float64(K_val);alpha_val=Float64(alpha_val);refdir1_val=Float64(refdir1_val);refdir2_val=Float64(refdir2_val);refdir3_val=Float64(refdir3_val);
-        t1_val=Float64(t1_val);porosity1_val=Float64(porosity1_val);K1_val=Float64(K1_val);alpha1_val=Float64(alpha1_val);refdir11_val=Float64(refdir11_val);refdir21_val=Float64(refdir21_val);refdir31_val=Float64(refdir31_val);
-        t2_val=Float64(t2_val);porosity2_val=Float64(porosity2_val);K2_val=Float64(K2_val);alpha2_val=Float64(alpha2_val);refdir12_val=Float64(refdir12_val);refdir22_val=Float64(refdir22_val);refdir32_val=Float64(refdir32_val);
-        t3_val=Float64(t3_val);porosity3_val=Float64(porosity3_val);K3_val=Float64(K3_val);alpha3_val=Float64(alpha3_val);refdir13_val=Float64(refdir13_val);refdir23_val=Float64(refdir23_val);refdir33_val=Float64(refdir33_val);
-        t4_val=Float64(t4_val);porosity4_val=Float64(porosity4_val);K4_val=Float64(K4_val);alpha4_val=Float64(alpha4_val);refdir14_val=Float64(refdir14_val);refdir24_val=Float64(refdir24_val);refdir34_val=Float64(refdir34_val);
-        patchtype1val=Int64(patchtype1val);patchtype2val=Int64(patchtype2val);patchtype3val=Int64(patchtype3val);patchtype4val=Int64(patchtype4val);
-        i_restart=Int64(i_restart);i_interactive=Int64(i_interactive);n_pics=Int64(n_pics);
+        tmax=Float64(tmax)
+        p_ref=Float64(p_ref);rho_ref=Float64(rho_ref);gamma=Float64(gamma);mu_resin_val=Float64(mu_resin_val)
+        p_a_val=Float64(p_a_val);p_init_val=Float64(p_init_val)
+        t_val=Float64(t_val);porosity_val=Float64(porosity_val);K_val=Float64(K_val);alpha_val=Float64(alpha_val);refdir1_val=Float64(refdir1_val);refdir2_val=Float64(refdir2_val);refdir3_val=Float64(refdir3_val)
+        t1_val=Float64(t1_val);porosity1_val=Float64(porosity1_val);K1_val=Float64(K1_val);alpha1_val=Float64(alpha1_val);refdir11_val=Float64(refdir11_val);refdir21_val=Float64(refdir21_val);refdir31_val=Float64(refdir31_val)
+        t2_val=Float64(t2_val);porosity2_val=Float64(porosity2_val);K2_val=Float64(K2_val);alpha2_val=Float64(alpha2_val);refdir12_val=Float64(refdir12_val);refdir22_val=Float64(refdir22_val);refdir32_val=Float64(refdir32_val)
+        t3_val=Float64(t3_val);porosity3_val=Float64(porosity3_val);K3_val=Float64(K3_val);alpha3_val=Float64(alpha3_val);refdir13_val=Float64(refdir13_val);refdir23_val=Float64(refdir23_val);refdir33_val=Float64(refdir33_val)
+        t4_val=Float64(t4_val);porosity4_val=Float64(porosity4_val);K4_val=Float64(K4_val);alpha4_val=Float64(alpha4_val);refdir14_val=Float64(refdir14_val);refdir24_val=Float64(refdir24_val);refdir34_val=Float64(refdir34_val)
+        patchtype1val=Int64(patchtype1val);patchtype2val=Int64(patchtype2val);patchtype3val=Int64(patchtype3val);patchtype4val=Int64(patchtype4val)
+        i_restart=Int64(i_restart);i_interactive=Int64(i_interactive);n_pics=Int64(n_pics)
  
         #License statement
         print("\n")
-        print("RTMsim version 0.2 \n");
-        print("RTMsim is Julia code with GUI which simulates the mold filling in Liquid Composite Molding (LCM) manufacturing process. \n");
-        print("Copyright (C) 2022 Christof Obertscheider / University of Applied Sciences Wiener Neustadt (FHWN)  \n");    
+        print("RTMsim version 0.2 \n")
+        print("RTMsim is Julia code with GUI which simulates the mold filling in Liquid Composite Molding (LCM) manufacturing process. \n")
+        print("Copyright (C) 2022 Christof Obertscheider / University of Applied Sciences Wiener Neustadt (FHWN)  \n")
         print("\n")
-        print("This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \n");
+        print("This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \n")
         print("\n")
-        print("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. \n");
+        print("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. \n")
         print("\n")
-        print("You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.\n");
+        print("You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.\n")
         print("\n")
         print("This software is free of charge and may be used for commercial and academic purposes.  Please mention the use of this software at an appropriate place in your work. \n")
         print("\n")
-        print("Submit bug reports to christof.obertscheider@fhwn.ac.at \n");
+        print("Submit bug reports to christof.obertscheider@fhwn.ac.at \n")
         print("\n")
 
         #Output simulation parameter overview
         print("\n")
         print("RTMsim started with the following parameters:\n")
         print("i_model=",i_model,"\n")
-            if i_model!=1;
-                errorstring=string("Only iso-thermal RTM implemented, i.e. i_model must be =1 instead of =",string(i_model)*"\n"); 
-                error(errorstring);
+            if i_model!=1
+                errorstring="Only iso-thermal RTM implemented, i.e. i_model must be =1 instead of = $(i_model)\n"
+                error(errorstring)
             end
         print("meshfilename=",meshfilename,"\n")
-            if ~isfile(meshfilename);
-                errorstring=string("File ",meshfilename," not existing"* "\n"); 
+            if ~isfile(meshfilename)
+                errorstring="File $(meshfilename) not existing\n"
                 error(errorstring);
             end
         print("tmax=",string(tmax),"\n")
-            if tmax<=0.0;
+            if tmax<=0.0
                 errorstring="tmax must be greater than zero"
                 error(errorstring)
             end
             #Limit number of results time steps between n_pics_min and n_pics_max and make it multiple of 4
-            n_pics_input=n_pics;
-            n_pics_min=Int64(4);
-            n_pics_max=Int64(100);
-            if mod(n_pics,4)!=0;
-                n_pics=round(n_pics/4)*4;
+            n_pics_input=n_pics
+            n_pics_min = 4
+            n_pics_max = 100
+            if mod(n_pics,4)!=0
+                n_pics=round(n_pics/4)*4
             end
             if n_pics<n_pics_min
-                n_pics=n_pics_min;
+                n_pics=n_pics_min
             end
             if n_pics>n_pics_max
-                n_pics=n_pics_max; 
+                n_pics=n_pics_max 
             end       
-            if n_pics>n_pics_max;
-                n_pics=n_pics_max;
+            if n_pics>n_pics_max
+                n_pics=n_pics_max
             end
-            n_pics=Int64(n_pics);
-        if n_pics_input!=n_pics;
-            print("n_pics changed to n_pics=",string(n_pics),"\n")
+            n_pics=Int64(n_pics)
+        if n_pics_input!=n_pics
+            print("n_pics changed to n_pics=$(n_pics)\n")
         else
-            print("n_pics=",string(n_pics),"\n")
+            print("n_pics=$(n_pics)\n")
         end
-        print("i_interactive=",string(i_interactive),"\n");   
-            if i_interactive!=0 && i_interactive!=1 && i_interactive!=2;
+        print("i_interactive=$(i_interactive)\n")
+            if i_interactive!=0 && i_interactive!=1 && i_interactive!=2
                 errorstring="Wrong value for i_interactive (must be=0,1,2)"
                 error(errorstring)
             end 
-        if i_restart==1; 
-            print("i_restart,restartfilename=",string(i_restart), ",", restartfilename,"\n"); 
-            if i_restart!=0 && i_restart!=1 ;
+        if i_restart==1
+            println("i_restart,restartfilename=$(i_restart), restartfilename,") 
+            if i_restart!=0 && i_restart!=1
                 errorstring="Wrong value for i_restart (must be=0,1)"
                 error(errorstring)
             end 
-            if ~isfile(restartfilename);
-                errorstring=string("File ",restartfilename," not existing"* "\n"); 
+            if ~isfile(restartfilename)
+                errorstring="File $(restartfilename) not existing\n" 
                 error(errorstring);
             end
         end
-        print("p_ref,rho_ref,gamma,mu=", string(p_ref), ",", string(rho_ref), ",", string(gamma), ",", string(mu_resin_val),"\n")
-        if p_ref<=0.0 || rho_ref<=0.0 || gamma<1.0 || mu_resin_val<=0.0;
+        println("p_ref,rho_ref,gamma,mu=$(p_ref), string(rho_ref), string(gamma),string(mu_resin_val)")
+        if p_ref<=0.0 || rho_ref<=0.0 || gamma<1.0 || mu_resin_val<=0.0
             errorstring="Wrong value for p_ref,rho_ref,gamma,mu (must be >0.0,>0.0,>1.0,>0.0)"
             error(errorstring)
         end 
-        print("p_a_val,p_init_val=", string(p_a_val), ",", string(p_init_val),"\n")
-            if p_a_val<=p_init_val;
+        println("p_a_val,p_init_val=$(p_a_val), string(p_init_val),")
+            if p_a_val<=p_init_val
                 errorstring="Injection pressure must be greater than initial pressure"
                 error(errorstring)
             end
@@ -366,32 +368,32 @@ module rtmsim
             end 
 
         #Maximum number of cell neighbours
-        maxnumberofneighbours=10;
+        maxnumberofneighbours=10
 
         #Delete old files and abort if meshfile is not existing
-        if ~isfile(meshfilename);
-            errorstring=string("File ",meshfilename," not existing"* "\n"); 
-            error(errorstring);
+        if ~isfile(meshfilename)
+            errorstring=string("File $(meshfilename) not existing\n") 
+            error(errorstring)
         end
-        if i_restart==1;
-            cp(restartfilename,"restart.jdl2";force=true);
+        if i_restart==1
+            cp(restartfilename,"restart.jdl2";force=true)
         end
-        delete_files();     
-        if i_restart==1;
-            cp("restart.jdl2",restartfilename;force=true);
+        delete_files()     
+        if i_restart==1
+            cp("restart.jdl2",restartfilename;force=true)
         end
-        n_out=Int64(0);
+        n_out=Int64(0)
 
         #Assign and prepare physical parameters
         refdir_val=[refdir1_val,refdir2_val,refdir3_val]  #Vector
-        u_a=Float64(0.0);  
-        u_b=Float64(0.0); 
-        u_init=Float64(0.0); 
-        v_a=Float64(0.0); 
-        v_b=Float64(0.0); 
-        v_init=Float64(0.0); 
-        p_a=p_a_val;
-        p_init=p_init_val;
+        u_a=0.0  
+        u_b=0.0 
+        u_init=0.0 
+        v_a=0.0 
+        v_b=0.0 
+        v_init=0.0 
+        p_a=p_a_val
+        p_init=p_init_val
         p_b=p_a_val;
         #Normalization for Delta p: p->p-p_init
             p_eps=Float64(0.001e5); #Float64(0.000e5);  #
