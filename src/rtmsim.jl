@@ -478,183 +478,183 @@ module rtmsim
         N,cellgridid,gridx,gridy,gridz,cellcenterx,cellcentery,cellcenterz,patchparameters,patchparameters1,patchparameters2,patchparameters3,patchparameters4,patchids1,patchids2,patchids3,patchids4,inletpatchids=
             read_mesh(meshfilename,paramset,paramset1,paramset2,paramset3,paramset4,patchtype1val,patchtype2val,patchtype3val,patchtype4val,i_interactive,r_p);
 
-        print(string("parameters for main preform: ",string(patchparameters) , "\n" ) );
-        if patchparameters[1]<=0.0 || patchparameters[1]>1.0 || patchparameters[2]<=0.0 || patchparameters[3]<=0 || patchparameters[4]<=0;
+        println("parameters for main preform: $(patchparameters)")
+        if patchparameters[1]<=0.0 || patchparameters[1]>1.0 || patchparameters[2]<=0.0 || patchparameters[3]<=0 || patchparameters[4]<=0
             errorstring="Wrong value for porosity,thickness,permeability,alpha (must be between >0 and <=1,>0.0,>0.0,>0.0)"
             error(errorstring)
         end 
-        if ~isempty(patchids1); 
-            if patchtype1val==1;        
-                print("patch 1 is pressure inlet \n"); 
-            elseif patchtype1val==2;        
-                print(string("parameters for patch 1: ",string(patchparameters1), "\n" ) );
-                if patchparameters1[1]<=0.0 || patchparameters1[1]>1.0 || patchparameters1[2]<=0.0 || patchparameters1[3]<=0 || patchparameters1[4]<=0;
+        if ~isempty(patchids1) 
+            if patchtype1val==1        
+                println("patch 1 is pressure inlet") 
+            elseif patchtype1val==2        
+                println("parameters for patch 1: $(patchparameters1)")
+                if patchparameters1[1]<=0.0 || patchparameters1[1]>1.0 || patchparameters1[2]<=0.0 || patchparameters1[3]<=0 || patchparameters1[4]<=0
                     errorstring="Wrong value for porosity,thickness,permeability,alpha (must be between >0 and <=1,>0.0,>0.0,>0.0)"
                     error(errorstring)
                 end 
-            elseif patchtype1val==3;        
-                print("patch 1 is pressure outlet \n"); 
+            elseif patchtype1val==3        
+                println("patch 1 is pressure outlet") 
             end
         end
-        if ~isempty(patchids2); 
-            if patchtype2val==1;        
-                print("patch 4 is pressure inlet \n"); 
-            elseif patchtype2val==2;        
-                print(string("parameters for patch 2: ",string(patchparameters2), "\n" ) );
-                if patchparameters2[1]<=0.0 || patchparameters2[1]>1.0 || patchparameters2[2]<=0.0 || patchparameters2[3]<=0 || patchparameters2[4]<=0;
+        if ~isempty(patchids2)
+            if patchtype2val==1        
+                println("patch 4 is pressure inlet") 
+            elseif patchtype2val==2        
+                print("parameters for patch 2: $(patchparameters2)")
+                if patchparameters2[1]<=0.0 || patchparameters2[1]>1.0 || patchparameters2[2]<=0.0 || patchparameters2[3]<=0 || patchparameters2[4]<=0
                     errorstring="Wrong value for porosity,thickness,permeability,alpha (must be between >0 and <=1,>0.0,>0.0,>0.0)"
                     error(errorstring)
                 end 
-            elseif patchtype2val==3;        
-                print("patch 2 is pressure outlet \n"); 
+            elseif patchtype2val==3        
+                println("patch 2 is pressure outlet") 
             end
         end
-        if ~isempty(patchids3); 
-            if patchtype3val==1;        
-                print("patch 3 is pressure inlet \n"); 
-            elseif patchtype3val==2;        
-                print(string("parameters for patch 3: ",string(patchparameters3), "\n" ) );
-                if patchparameters3[1]<=0.0 || patchparameters3[1]>1.0 || patchparameters3[2]<=0.0 || patchparameters3[3]<=0 || patchparameters3[4]<=0;
+        if ~isempty(patchids3)
+            if patchtype3val==1   
+                println("patch 3 is pressure inlet")
+            elseif patchtype3val==2    
+                println("parameters for patch 3: $(patchparameters3)")
+                if patchparameters3[1]<=0.0 || patchparameters3[1]>1.0 || patchparameters3[2]<=0.0 || patchparameters3[3]<=0 || patchparameters3[4]<=0
                     errorstring="Wrong value for porosity,thickness,permeability,alpha (must be between >0 and <=1,>0.0,>0.0,>0.0)"
                     error(errorstring)
                 end 
-            elseif patchtype3val==3;        
-                print("patch 3 is pressure outlet \n"); 
+            elseif patchtype3val==3
+                println("patch 3 is pressure outlet") 
             end
         end
-        if ~isempty(patchids4); 
-            if patchtype4val==1;        
-                print("patch 4 is pressure inlet \n"); 
-            elseif patchtype4val==2;        
-                print(string("parameters for patch 4: ",string(patchparameters4),"\n" ) );
-                if patchparameters4[1]<=0.0 || patchparameters4[1]>1.0 || patchparameters4[2]<=0.0 || patchparameters4[3]<=0 || patchparameters4[4]<=0;
+        if ~isempty(patchids4)
+            if patchtype4val==1        
+                println("patch 4 is pressure inlet") 
+            elseif patchtype4val==2        
+                println("parameters for patch 4: $(patchparameters4)")
+                if patchparameters4[1]<=0.0 || patchparameters4[1]>1.0 || patchparameters4[2]<=0.0 || patchparameters4[3]<=0 || patchparameters4[4]<=0
                     errorstring="Wrong value for porosity,thickness,permeability,alpha (must be between >0 and <=1,>0.0,>0.0,>0.0)"
                     error(errorstring)
                 end 
-            elseif patchtype4val==3;        
-                print("patch 4 is pressure outlet \n");   
+            elseif patchtype4val==3       
+                println("patch 4 is pressure outlet")  
             end
         end
         if patchtype1val!=1 && patchtype2val!=1 && patchtype3val!=1 && patchtype3val!=1 && i_interactive==0 && i_restart==0
-            errorstring=string("No inlet defined" * "\n"); 
-            error(errorstring);
+            errorstring="No inlet defined\n" 
+            error(errorstring)
         end
-        if i_interactive==1 || i_interactive==2;
-            print("additional inlet defined interactively \n");   
+        if i_interactive==1 || i_interactive==2
+            println("additional inlet defined interactively");   
         end
 
         #--------------------------------------------------------------------------
         #  Find neighbouring cells
         #--------------------------------------------------------------------------    
         faces,cellneighboursarray,celltype = 
-            create_faces(cellgridid, N, maxnumberofneighbours);
+            create_faces(cellgridid, N, maxnumberofneighbours)
 
 
         #--------------------------------------------------------------------------
         #  Assign parameters to cells
         #--------------------------------------------------------------------------             
         cellthickness, cellporosity, cellpermeability, cellalpha, celldirection, cellviscosity, celltype = 
-            assign_parameters(i_interactive,celltype,patchparameters,patchparameters1,patchparameters2,patchparameters3,patchparameters4,patchtype1val,patchtype2val,patchtype3val,patchtype4val,patchids1,patchids2,patchids3,patchids4,inletpatchids,mu_resin_val,N);
+            assign_parameters(i_interactive,celltype,patchparameters,patchparameters1,patchparameters2,patchparameters3,patchparameters4,patchtype1val,patchtype2val,patchtype3val,patchtype4val,patchids1,patchids2,patchids3,patchids4,inletpatchids,mu_resin_val,N)
 
 
         #--------------------------------------------------------------------------    
         #  Create local cell coordinate systems
         #--------------------------------------------------------------------------    
         cellvolume, cellcentertocellcenterx, cellcentertocellcentery, T11, T12, T21, T22, cellfacenormalx, cellfacenormaly, cellfacearea = 
-            create_coordinate_systems(N, cellgridid, gridx, gridy, gridz, cellcenterx,cellcentery,cellcenterz, faces, cellneighboursarray, celldirection, cellthickness,maxnumberofneighbours);
+            create_coordinate_systems(N, cellgridid, gridx, gridy, gridz, cellcenterx,cellcentery,cellcenterz, faces, cellneighboursarray, celldirection, cellthickness,maxnumberofneighbours)
 
 
         #----------------------------------------------------------------------
         # Initial time step calculation
         #----------------------------------------------------------------------
-        area=minimum(cellvolume./cellthickness);
-        maxspeed=max(maximum(cellpermeability./cellviscosity),maximum(cellalpha.*cellpermeability./cellviscosity))*(p_a_val-p_init_val)/minimum(cellvolume./cellthickness);  #sqrt(area);
-        betat1=1;
-        deltat=betat1*sqrt(area)/maxspeed;
-        deltat_initial=deltat;
+        area=minimum(cellvolume./cellthickness)
+        maxspeed=max(maximum(cellpermeability./cellviscosity),maximum(cellalpha.*cellpermeability./cellviscosity))*(p_a_val-p_init_val)/minimum(cellvolume./cellthickness) #sqrt(area);
+        betat1=1
+        deltat=betat1*sqrt(area)/maxspeed
+        deltat_initial=deltat
 
 
         #----------------------------------------------------------------------
         # Array initialization
         #----------------------------------------------------------------------
-        rho_old=Vector{Float64}(undef, N);
-        u_old=Vector{Float64}(undef, N);
-        v_old=Vector{Float64}(undef, N);
-        p_old=Vector{Float64}(undef, N);
-        gamma_old=Vector{Float64}(undef, N);
-        rho_new=Vector{Float64}(undef, N);
-        u_new=Vector{Float64}(undef, N);
-        v_new=Vector{Float64}(undef, N);
-        p_new=Vector{Float64}(undef, N);
-        gamma_new=Vector{Float64}(undef, N);
-        gamma_out=Vector{Float64}(undef, N);
-        for ind in 1:N;
-            u_old[ind]=u_init;
-            v_old[ind]=v_init;
-            rho_old[ind]=rho_init;
-            p_old[ind]=p_init;
-            gamma_old[ind]=gamma_init;
+        rho_old=Vector{Float64}(undef, N)
+        u_old=Vector{Float64}(undef, N)
+        v_old=Vector{Float64}(undef, N)
+        p_old=Vector{Float64}(undef, N)
+        gamma_old=Vector{Float64}(undef, N)
+        rho_new=Vector{Float64}(undef, N)
+        u_new=Vector{Float64}(undef, N)
+        v_new=Vector{Float64}(undef, N)
+        p_new=Vector{Float64}(undef, N)
+        gamma_new=Vector{Float64}(undef, N)
+        gamma_out=Vector{Float64}(undef, N)
+        for ind in 1:N
+            u_old[ind]=u_init
+            v_old[ind]=v_init
+            rho_old[ind]=rho_init
+            p_old[ind]=p_init
+            gamma_old[ind]=gamma_init
         end
         for ind in 1:N
-            u_new[ind]=-9e9;
-            v_new[ind]=-9e9;
-            rho_new[ind]=-9e9;
-            p_new[ind]=-9e9;
-            gamma_new[ind]=-9e9;
-            gamma_out[ind]=-9e9;
+            u_new[ind]=-9e9
+            v_new[ind]=-9e9
+            rho_new[ind]=-9e9
+            p_new[ind]=-9e9
+            gamma_new[ind]=-9e9
+            gamma_out[ind]=-9e9
         end        
-        thickness_factor=Vector{Float64}(undef, N);
-        volume_factor=Vector{Float64}(undef, N);
-        face_factor=Array{Float64}(undef, N, maxnumberofneighbours);
-        porosity_factor=Vector{Float64}(undef, N);
-        permeability_factor=Vector{Float64}(undef, N);
-        viscosity_factor=Vector{Float64}(undef, N);
+        thickness_factor=Vector{Float64}(undef, N)
+        volume_factor=Vector{Float64}(undef, N)
+        face_factor=Array{Float64}(undef, N, maxnumberofneighbours)
+        porosity_factor=Vector{Float64}(undef, N)
+        permeability_factor=Vector{Float64}(undef, N)
+        viscosity_factor=Vector{Float64}(undef, N)
 
-        if i_restart==1;
-            if ~isfile(restartfilename);
-                errorstring=string("File ",restartfilename," not existing"  * "\n"); 
-                error(errorstring);
+        if i_restart==1
+            if ~isfile(restartfilename)
+                errorstring="File $(restartfilename) not existing\n"
+                error(errorstring)
             end
             @load restartfilename t rho_new u_new v_new p_new gamma_new gamma_out gridx gridy gridz cellgridid N n_out
-            u_old=u_new;
-            v_old=v_new;
-            rho_old=rho_new;
-            p_old=p_new;
-            gamma_old=gamma_new;
-            t_restart=t;
+            u_old=u_new
+            v_old=v_new
+            rho_old=rho_new
+            p_old=p_new
+            gamma_old=gamma_new
+            t_restart=t
         else 
-            t_restart=0;
+            t_restart=0
         end
 
         #----------------------------------------------------------------------
         # Define simulation time and intermediate output times
         #----------------------------------------------------------------------
-        t_out=0;
-        t_progressbar=0;
-        t=0;
-        tmin=n_pics*deltat;
-        tmax=max(tmin,tmax);    
+        t_out=0
+        t_progressbar=0
+        t=0
+        tmin=n_pics*deltat
+        tmax=max(tmin,tmax)   
 
         #----------------------------------------------------------------------
         # Boundary conditions
         #----------------------------------------------------------------------
-        for ind in 1:N;
-            if celltype[ind]==-1;  #pressure boundary
-                u_old[ind]=u_a;
-                v_old[ind]=v_a;
-                rho_old[ind]=rho_a;
-                p_old[ind]=p_a;
-                gamma_old[ind]=gamma_a;
-            elseif celltype[ind]==-2;  #pressure outlet
-                u_old[ind]=u_init;
-                v_old[ind]=v_init;
-                rho_old[ind]=rho_init;
-                p_old[ind]=p_init;
-                gamma_old[ind]=gamma_init;
+        for ind in 1:N
+            if celltype[ind]==-1  #pressure boundary
+                u_old[ind]=u_a
+                v_old[ind]=v_a
+                rho_old[ind]=rho_a
+                p_old[ind]=p_a
+                gamma_old[ind]=gamma_a
+            elseif celltype[ind]==-2  #pressure outlet
+                u_old[ind]=u_init
+                v_old[ind]=v_init
+                rho_old[ind]=rho_init
+                p_old[ind]=p_init
+                gamma_old[ind]=gamma_init
             end
         end
 
-        if i_model==2;
+        if i_model==2
             #----------------------------------------------------------------------
             # Optional initialization if i_model=2,3,.. 
             #----------------------------------------------------------------------
@@ -666,211 +666,211 @@ module rtmsim
         end
 
         #Abort if no pressure inlet is defined, neither interactively nor as patch
-        if i_restart==0;
-            inds1=findall(isequal(-1),celltype);
+        if i_restart==0
+            inds1=findall(isequal(-1),celltype)
             if isempty(inds1)
-                errorstring="No pressure inlet ports defined";
-                error(errorsting);
+                errorstring="No pressure inlet ports defined"
+                error(errorsting)
             end
         end
 
         #----------------------------------------------------------------------
         # Time evolution
         #----------------------------------------------------------------------
-        n_progressbar=20;
-        deltat_progressbar=tmax/n_progressbar;
-        p=Progress(n_progressbar);
-        iter=1;
-        while t<=tmax;           
+        n_progressbar=20
+        deltat_progressbar=tmax/n_progressbar
+        p=Progress(n_progressbar)
+        iter=1
+        while t<=tmax         
             for ind in 1:N 
-                if i_model==1;
-                    thickness_factor[ind]=Float64(1.0);  #change in cell thickness
-                    volume_factor[ind]=Float64(1.0);  #change in cell volume do to cell thickness change
+                if i_model==1
+                    thickness_factor[ind]=1.0  #change in cell thickness
+                    volume_factor[ind]=1.0  #change in cell volume do to cell thickness change
                     for i_neighbour in 1:maxnumberofneighbours
-                        face_factor[ind,i_neighbour]=Float64(1.0);  #change is cell boundary area as average of the change in the two neighbouring cells
+                        face_factor[ind,i_neighbour]=1.0  #change is cell boundary area as average of the change in the two neighbouring cells
                     end
-                    porosity_factor[ind]=Float64(1.0);  #change in porosity
-                    permeability_factor[ind]=Float64(1.0);  #change in permeability
-                    viscosity_factor[ind]=Float64(1.0);  #change in viscosity
-                elseif i_model==2;
+                    porosity_factor[ind]=1.0  #change in porosity
+                    permeability_factor[ind]=1.0  #change in permeability
+                    viscosity_factor[ind]=1.0  #change in viscosity
+                elseif i_model==2
                     #Optional initialization if i_model=2,3,.. 
                 end
             end
 
             for ind in 1:N
-                if celltype[ind]==1  || celltype[ind]==-3; 
+                if celltype[ind]==1  || celltype[ind]==-3
                     #Pressure gradient calculation
                     #dpdx,dpdy=numerical_gradient(1,ind,p_old,cellneighboursarray,cellcentertocellcenterx,cellcentertocellcentery);
-                    dpdx,dpdy=numerical_gradient(3,ind,p_old,cellneighboursarray,cellcentertocellcenterx,cellcentertocellcentery);
+                    dpdx,dpdy=numerical_gradient(3,ind,p_old,cellneighboursarray,cellcentertocellcenterx,cellcentertocellcentery)
                     
                     #FV scheme for rho,u,v,vof conservation laws
-                    cellneighboursline=cellneighboursarray[ind,:];
+                    cellneighboursline=cellneighboursarray[ind,:]
                     cellneighboursline=cellneighboursline[cellneighboursline .> 0]
                     len_cellneighboursline=length(cellneighboursline)
-                    F_rho_num=Float64(0.0);F_rho_num_add=Float64(0.0);
-                    F_u_num=Float64(0.0);F_u_num_add=Float64(0.0);
-                    F_v_num=Float64(0.0);F_v_num_add=Float64(0.0);
-                    F_gamma_num=Float64(0.0);F_gamma_num_add=Float64(0.0);
-                    F_gamma_num1=Float64(0.0);F_gamma_num1_add=Float64(0.0);
-                    for i_neighbour=1:len_cellneighboursline;
-                        i_P=ind;
-                        i_A=cellneighboursarray[ind,i_neighbour];      
-                        rho_P=rho_old[i_P];
-                        rho_A=rho_old[i_A];
-                        u_P=u_old[i_P];
-                        v_P=v_old[i_P];
-                        uvec=[T11[ind,i_neighbour] T12[ind,i_neighbour]; T21[ind,i_neighbour] T22[ind,i_neighbour]]*[u_old[i_A];v_old[i_A]];
-                        u_A=uvec[1];
-                        v_A=uvec[2];
-                        gamma_P=gamma_old[i_P];
-                        gamma_A=gamma_old[i_A];
-                        A=cellfacearea[i_P,i_neighbour]*face_factor[i_P,i_neighbour];
-                        n_x=cellfacenormalx[i_P,i_neighbour];
-                        n_y=cellfacenormaly[i_P,i_neighbour];
-                        vars_P=[rho_P,u_P,v_P,gamma_P];
-                        vars_A=[rho_A,u_A,v_A,gamma_A];
-                        if i_A>0 && (celltype[i_A]==1 || celltype[i_A]==-3);  #neighbour is inner or wall cell                            
-                            meshparameters=[n_x,n_y,A];
-                            F_rho_num_add,F_u_num_add,F_v_num_add,F_gamma_num_add,F_gamma_num1_add=numerical_flux_function(1,vars_P,vars_A,meshparameters);
-                            F_rho_num=F_rho_num+F_rho_num_add;
-                            F_u_num=F_u_num+F_u_num_add;
-                            F_v_num=F_v_num+F_v_num_add;
-                            F_gamma_num=F_gamma_num+F_gamma_num_add;
-                            F_gamma_num1=F_gamma_num1+F_gamma_num1_add;  
+                    F_rho_num=0.0;F_rho_num_add=0.0
+                    F_u_num=0.0;F_u_num_add=0.0
+                    F_v_num=0.0;F_v_num_add=0.0
+                    F_gamma_num=0.0;F_gamma_num_add=0.0
+                    F_gamma_num1=0.0;F_gamma_num1_add=0.0
+                    for i_neighbour=1:len_cellneighboursline
+                        i_P=ind
+                        i_A=cellneighboursarray[ind,i_neighbour]    
+                        rho_P=rho_old[i_P]
+                        rho_A=rho_old[i_A]
+                        u_P=u_old[i_P]
+                        v_P=v_old[i_P]
+                        uvec=[T11[ind,i_neighbour] T12[ind,i_neighbour]; T21[ind,i_neighbour] T22[ind,i_neighbour]]*[u_old[i_A];v_old[i_A]]
+                        u_A=uvec[1]
+                        v_A=uvec[2]
+                        gamma_P=gamma_old[i_P]
+                        gamma_A=gamma_old[i_A]
+                        A=cellfacearea[i_P,i_neighbour]*face_factor[i_P,i_neighbour]
+                        n_x=cellfacenormalx[i_P,i_neighbour]
+                        n_y=cellfacenormaly[i_P,i_neighbour]
+                        vars_P=[rho_P,u_P,v_P,gamma_P]
+                        vars_A=[rho_A,u_A,v_A,gamma_A]
+                        if i_A>0 && (celltype[i_A]==1 || celltype[i_A]==-3)  #neighbour is inner or wall cell                            
+                            meshparameters=[n_x,n_y,A]
+                            F_rho_num_add,F_u_num_add,F_v_num_add,F_gamma_num_add,F_gamma_num1_add=numerical_flux_function(1,vars_P,vars_A,meshparameters)
+                            F_rho_num+=F_rho_num_add
+                            F_u_num+=F_u_num_add
+                            F_v_num+=F_v_num_add
+                            F_gamma_num+=F_gamma_num_add
+                            F_gamma_num1+=F_gamma_num1_add 
                         end       
-                        if i_A>0 && (celltype[i_A]==-1 || celltype[i_A]==-2);  #neighbour is pressure inlet or outlet
-                            A=A*cellthickness[i_P]/(0.5*(cellthickness[i_P]+cellthickness[i_A]));
-                            meshparameters=[n_x,n_y,A];
-                            if celltype[i_A]==-2;  #pressure outlet
-                                n_dot_u=dot([n_x; n_y],[u_P; v_P]);
-                            elseif celltype[i_A]==-1;  #pressure inlet
-                                n_dot_u=min(0,-1/(cellviscosity[i_P]*viscosity_factor[i_P])*dot([cellpermeability[i_P]*permeability_factor[i_P] 0; 0 cellalpha[i_P]*cellpermeability[i_P]*permeability_factor[ind]]*[dpdx;dpdy],[cellfacenormalx[i_P,i_neighbour];cellfacenormaly[i_P,i_neighbour]]));  #inflow according to Darcy's law and no backflow possible
+                        if i_A>0 && (celltype[i_A]==-1 || celltype[i_A]==-2)  #neighbour is pressure inlet or outlet
+                            A=A*cellthickness[i_P]/(0.5*(cellthickness[i_P]+cellthickness[i_A]))
+                            meshparameters=[n_x,n_y,A]
+                            if celltype[i_A]==-2  #pressure outlet
+                                n_dot_u=dot([n_x; n_y],[u_P; v_P])
+                            elseif celltype[i_A]==-1  #pressure inlet
+                                n_dot_u=min(0,-1/(cellviscosity[i_P]*viscosity_factor[i_P])*dot([cellpermeability[i_P]*permeability_factor[i_P] 0; 0 cellalpha[i_P]*cellpermeability[i_P]*permeability_factor[ind]]*[dpdx;dpdy],[cellfacenormalx[i_P,i_neighbour];cellfacenormaly[i_P,i_neighbour]]))  #inflow according to Darcy's law and no backflow possible
                             end
-                            F_rho_num_add,F_u_num_add,F_v_num_add,F_gamma_num_add,F_gamma_num1_add=numerical_flux_function_boundary(1,vars_P,vars_A,meshparameters,n_dot_u);
-                            F_rho_num=F_rho_num+F_rho_num_add;
-                            F_u_num=F_u_num+F_u_num_add;
-                            F_v_num=F_v_num+F_v_num_add;
-                            F_gamma_num=F_gamma_num+F_gamma_num_add;
-                            F_gamma_num1=F_gamma_num1+F_gamma_num1_add; 
+                            F_rho_num_add,F_u_num_add,F_v_num_add,F_gamma_num_add,F_gamma_num1_add=numerical_flux_function_boundary(1,vars_P,vars_A,meshparameters,n_dot_u)
+                            F_rho_num+=F_rho_num_add
+                            F_u_num+=F_u_num_add
+                            F_v_num+=F_v_num_add
+                            F_gamma_num+=F_gamma_num_add
+                            F_gamma_num1+=F_gamma_num1_add
                         end      
                     end
 
                     rho_new[ind]=rho_old[ind]-deltat*F_rho_num/(cellvolume[ind]*volume_factor[ind]);
                     rho_new[ind]=max(rho_new[ind],0.0)
-                    S_u=-dpdx;
-                    u_new[ind]=(rho_old[ind]*u_old[ind]-deltat*F_u_num/(cellvolume[ind]*volume_factor[ind])+S_u*deltat)/(rho_new[ind]+(cellviscosity[ind]*viscosity_factor[ind])/(cellpermeability[ind]*permeability_factor[ind])*deltat);
-                    S_v=-dpdy;
-                    v_new[ind]=(rho_old[ind]*v_old[ind]-deltat*F_v_num/(cellvolume[ind]*volume_factor[ind])+S_v*deltat)/(rho_new[ind]+(cellviscosity[ind]*viscosity_factor[ind])/(cellalpha[ind]*cellpermeability[ind]*permeability_factor[ind])*deltat);   
-                    gamma_new[ind]=((cellporosity[ind]*porosity_factor[ind])*gamma_old[ind]-deltat*(F_gamma_num-gamma_old[ind]*F_gamma_num1)/(cellvolume[ind]*volume_factor[ind]))/(cellporosity[ind]*porosity_factor[ind]); 
-                    gamma_new[ind]=min(1,gamma_new[ind]);
-                    gamma_new[ind]=max(0,gamma_new[ind]);
+                    S_u=-dpdx
+                    u_new[ind]=(rho_old[ind]*u_old[ind]-deltat*F_u_num/(cellvolume[ind]*volume_factor[ind])+S_u*deltat)/(rho_new[ind]+(cellviscosity[ind]*viscosity_factor[ind])/(cellpermeability[ind]*permeability_factor[ind])*deltat)
+                    S_v=-dpdy
+                    v_new[ind]=(rho_old[ind]*v_old[ind]-deltat*F_v_num/(cellvolume[ind]*volume_factor[ind])+S_v*deltat)/(rho_new[ind]+(cellviscosity[ind]*viscosity_factor[ind])/(cellalpha[ind]*cellpermeability[ind]*permeability_factor[ind])*deltat)  
+                    gamma_new[ind]=((cellporosity[ind]*porosity_factor[ind])*gamma_old[ind]-deltat*(F_gamma_num-gamma_old[ind]*F_gamma_num1)/(cellvolume[ind]*volume_factor[ind]))/(cellporosity[ind]*porosity_factor[ind])
+                    gamma_new[ind]=min(1,gamma_new[ind])
+                    gamma_new[ind]=max(0,gamma_new[ind])
                     #EOS:
-                    if gamma>1.01;
-                       p_new[ind]=ap1*rho_new[ind]^2+ap2*rho_new[ind]+ap3;
+                    if gamma>1.01
+                       p_new[ind]=ap1*rho_new[ind]^2+ap2*rho_new[ind]+ap3
                     else
-                        p_new[ind]=kappa*rho_new[ind]^gamma;
+                        p_new[ind]=kappa*rho_new[ind]^gamma
                     end
                 end
             end
 
             #boundary conditions, only for pressure boundary conditions
-            for ind in 1:N;
-                if celltype[ind]==-1;  #pressure inlet
-                    u_new[ind]=u_a;
-                    v_new[ind]=v_a;
-                    rho_new[ind]=rho_a;
-                    p_new[ind]=p_a;
-                elseif celltype[ind]==-2;  #pressure outlet
-                    u_new[ind]=u_init;
-                    v_new[ind]=v_init;
-                    rho_new[ind]=rho_init;
-                    p_new[ind]=p_init;
+            for ind in 1:N
+                if celltype[ind]==-1  #pressure inlet
+                    u_new[ind]=u_a
+                    v_new[ind]=v_a
+                    rho_new[ind]=rho_a
+                    p_new[ind]=p_a
+                elseif celltype[ind]==-2  #pressure outlet
+                    u_new[ind]=u_init
+                    v_new[ind]=v_init
+                    rho_new[ind]=rho_init
+                    p_new[ind]=p_init
                 end
-                if celltype[ind]==-1;  #pressure inlet
-                    gamma_new[ind]=gamma_a;
-                elseif celltype[ind]==-2;  #pressure outlet
-                    gamma_new[ind]=gamma_init;
+                if celltype[ind]==-1  #pressure inlet
+                    gamma_new[ind]=gamma_a
+                elseif celltype[ind]==-2 #pressure outlet
+                    gamma_new[ind]=gamma_init
                 end
             end 
 
             #prepare arrays for next time step
-            u_old=u_new;
-            v_old=v_new;
-            rho_old=rho_new;
-            p_old=p_new;
-            gamma_old=gamma_new;
+            u_old=u_new
+            v_old=v_new
+            rho_old=rho_new
+            p_old=p_new
+            gamma_old=gamma_new
 
             #Progress bar with percentage during run
-            prozent = (t/tmax)*100;  
-            if t>=t_progressbar;
+            prozent = (t/tmax)*100  
+            if t>=t_progressbar
                 #print(string(string(prozent),"%","\n"))
-                t_progressbar=t_progressbar+deltat_progressbar;   
-                next!(p);
+                t_progressbar=t_progressbar+deltat_progressbar  
+                next!(p)
             end      
 
             #Adaptive time stepping
-            if iter>n_pics;
-                inds1=findall(isequal(1),celltype);
-                inds2=findall(isequal(-3),celltype);
-                inds=vcat(inds1,inds2);               
-                weight_deltatnew=Float64(0.5);  #0.1;  #
-                if gamma>=100;
-                    betat2=Float64(0.1*0.1);
+            if iter>n_pics
+                inds1=findall(isequal(1),celltype)
+                inds2=findall(isequal(-3),celltype)
+                inds=vcat(inds1,inds2);              
+                weight_deltatnew=0.5  #0.1;  #
+                if gamma>=100
+                    betat2=0.1*0.1
                 else
-                    betat2=Float64(0.1);
+                    betat2=0.1
                 end
-                deltat1=(1-weight_deltatnew)*deltat+weight_deltatnew* betat2*minimum( (sqrt.(cellvolume[inds]./cellthickness[inds])) ./ sqrt.(u_new[inds].^2+v_new[inds].^2) );  
+                deltat1=(1-weight_deltatnew)*deltat+weight_deltatnew* betat2*minimum( (sqrt.(cellvolume[inds]./cellthickness[inds])) ./ sqrt.(u_new[inds].^2+v_new[inds].^2) )  
                 deltat=deltat1
                 #deltat2=(1-weight_deltatnew)*deltat+weight_deltatnew* betat2*minimum( (sqrt.(cellvolume[inds]./cellthickness[inds])) ./ 340)  #sqrt.(gamma*p_new[inds]./rho_new[inds]) );  
                 #deltat=min(deltat1,deltat2)  #minimum of convection and wave
-                deltatmax=tmax/(4*n_pics); #at least four steps between writing output
-                deltat=min(deltat,deltatmax);
+                deltatmax=tmax/(4*n_pics) #at least four steps between writing output
+                deltat=min(deltat,deltatmax)
             end
 
             #Save intermediate data
-            if t>=t_out  || (t+deltat>tmax);
-                if i_model==1;
-                    if i_restart==1;
-                        t_temp=t;
-                        t=t+t_restart;
+            if t>=t_out  || (t+deltat>tmax)
+                if i_model==1
+                    if i_restart==1
+                        t_temp=t
+                        t=t+t_restart
                     end
                     for i in 1:N
                         gamma_out[i]=gamma_new[i] 
                     end
-                    inds=findall(isequal(-1),celltype); #if pressure inlet cells are present
+                    inds=findall(isequal(-1),celltype) #if pressure inlet cells are present
                     for i in 1:length(inds)
-                        gamma_out[inds[i]]=Float64(-1.0); 
+                        gamma_out[inds[i]]=-1.0
                     end
-                    inds=findall(isequal(-2),celltype); #if pressure outlet cells are present, they should not be plotted in the gamma-plot because not updated
+                    inds=findall(isequal(-2),celltype) #if pressure outlet cells are present, they should not be plotted in the gamma-plot because not updated
                     for i in 1:length(inds)
-                        gamma_out[inds[i]]=Float64(-2.0); 
+                        gamma_out[inds[i]]=-2.0 
                     end
-                    if t>=(tmax+t_restart)-1.5*deltat;
-                        t_temp1=t;
-                        t=(tmax+t_restart);
+                    if t>=(tmax+t_restart)-1.5*deltat
+                        t_temp1=t
+                        t=(tmax+t_restart)
                     end
-                    outputfilename=string("output_", string(n_out), ".jld2")                
+                    outputfilename="output_$(n_out).jld2"                
                     @save outputfilename t rho_new u_new v_new p_new gamma_new gamma_out gridx gridy gridz cellgridid N n_out
                     
                     #temporary output in Matlab mat-format
                     #outputfilename=string("output_", string(n_out), ".mat") 
                     #matwrite(outputfilename, Dict("t" => t,"rho_new" => rho_new,"u_new" => u_new,"v_new" => v_new,"p_new" => p_new,"gamma_new" => gamma_new,"gridx" => gridx,"gridy" => gridy,"gridz" => gridz,"cellgridid" => cellgridid,"N" => N,"n_out" => n_out))
                     
-                    outputfilename=string("results.jld2")
+                    outputfilename="results.jld2"
                     @save outputfilename t rho_new u_new v_new p_new gamma_new gamma_out gridx gridy gridz cellgridid N n_out
-                    if t>=(tmax+t_restart)-deltat;
-                        t=t_temp1;
+                    if t>=(tmax+t_restart)-deltat
+                        t=t_temp1
                     end                    
-                    if i_restart==1;
-                        t=t_temp;
+                    if i_restart==1
+                        t=t_temp
                     end       
                 end     
-                n_out=n_out+1;
-                t_out=t_out+tmax/n_pics;            
+                n_out=n_out+1
+                t_out=t_out+tmax/n_pics           
             end
             
             
-            if i_model==2;
+            if i_model==2
                 #----------------------------------------------------------------------
                 # Optional time marching etc. for i_model=2,3,.. 
                 #----------------------------------------------------------------------
@@ -880,8 +880,8 @@ module rtmsim
                 # -write save data to output files
             end
 
-            iter=iter+1;
-            t=t+deltat; 
+            iter=iter+1
+            t=t+deltat
         end
     end
 
@@ -902,76 +902,76 @@ module rtmsim
     - cellcentertocellcenterx, cellcentertocellcentery :: Array{Float,2}
 
     """
-    function numerical_gradient(i_method,ind,p_old,cellneighboursarray,cellcentertocellcenterx,cellcentertocellcentery);
-        if i_method==1;
+    function numerical_gradient(i_method,ind,p_old,cellneighboursarray,cellcentertocellcenterx,cellcentertocellcentery)
+        if i_method==1
             #least square solution to determine gradient
-            cellneighboursline=cellneighboursarray[ind,:];
+            cellneighboursline=cellneighboursarray[ind,:]
             cellneighboursline=cellneighboursline[cellneighboursline .> 0]
             len_cellneighboursline=length(cellneighboursline)
-            bvec=Vector{Float64}(undef,len_cellneighboursline);
-            Amat=Array{Float64}(undef,len_cellneighboursline,2);  
-            for i_neighbour in 1:len_cellneighboursline;
-                i_P=ind;
-                i_A=cellneighboursarray[ind,i_neighbour];  
+            bvec=Vector{Float64}(undef,len_cellneighboursline)
+            Amat=Array{Float64}(undef,len_cellneighboursline,2)
+            for i_neighbour in 1:len_cellneighboursline
+                i_P=ind
+                i_A=cellneighboursarray[ind,i_neighbour]
                 Amat[i_neighbour,1]=cellcentertocellcenterx[ind,i_neighbour]
                 Amat[i_neighbour,2]=cellcentertocellcentery[ind,i_neighbour]
-                bvec[i_neighbour]=p_old[i_A]-p_old[i_P];
-            end
-
-            if len_cellneighboursline>1;
-                xvec=Amat[1:len_cellneighboursline,:]\bvec[1:len_cellneighboursline];
-                dpdx=xvec[1];
-                dpdy=xvec[2];        
-            else
-                dpdx=0;
-                dpdy=0;
-            end
-        elseif i_method==2;
-            #least square solution to determine gradient with limiter
-            cellneighboursline=cellneighboursarray[ind,:];
-            cellneighboursline=cellneighboursline[cellneighboursline .> 0]
-            len_cellneighboursline=length(cellneighboursline)
-            bvec=Vector{Float64}(undef,len_cellneighboursline);
-            Amat=Array{Float64}(undef,len_cellneighboursline,2);  
-            wi=Vector{Float64}(undef,len_cellneighboursline);
-            for i_neighbour in 1:len_cellneighboursline;
-                i_P=ind;
-                i_A=cellneighboursarray[ind,i_neighbour];  
-                exp_limiter=2;
-                wi[i_neighbour]=1/(sqrt((cellcentertocellcenterx[ind,i_neighbour])^2+(cellcentertocellcentery[ind,i_neighbour])^2))^exp_limiter;
-                Amat[i_neighbour,1]=wi[i_neighbour]*cellcentertocellcenterx[ind,i_neighbour]
-                Amat[i_neighbour,2]=wi[i_neighbour]*cellcentertocellcentery[ind,i_neighbour]
-                bvec[i_neighbour]=wi[i_neighbour]*(p_old[i_A]-p_old[i_P]);
+                bvec[i_neighbour]=p_old[i_A]-p_old[i_P]
             end
 
             if len_cellneighboursline>1
-                xvec=Amat[1:len_cellneighboursline,:]\bvec[1:len_cellneighboursline];
-                dpdx=xvec[1];
-                dpdy=xvec[2];            
+                xvec=Amat[1:len_cellneighboursline,:]\bvec[1:len_cellneighboursline]
+                dpdx=xvec[1]
+                dpdy=xvec[2]       
             else
-                dpdx=0;
-                dpdy=0;
+                dpdx=0
+                dpdy=0
             end
-        elseif i_method==3;
-            #least square solution to determine gradient - runtime optimized
-            cellneighboursline=cellneighboursarray[ind,:];
+        elseif i_method==2
+            #least square solution to determine gradient with limiter
+            cellneighboursline=cellneighboursarray[ind,:]
             cellneighboursline=cellneighboursline[cellneighboursline .> 0]
             len_cellneighboursline=length(cellneighboursline)
-            bvec=Vector{Float64}(undef,len_cellneighboursline);
-            Amat=Array{Float64}(undef,len_cellneighboursline,2);  
-            for i_neighbour in 1:len_cellneighboursline;
-                i_P=ind;
-                i_A=cellneighboursarray[ind,i_neighbour];  
+            bvec=Vector{Float64}(undef,len_cellneighboursline)
+            Amat=Array{Float64}(undef,len_cellneighboursline,2) 
+            wi=Vector{Float64}(undef,len_cellneighboursline)
+            for i_neighbour in 1:len_cellneighboursline
+                i_P=ind
+                i_A=cellneighboursarray[ind,i_neighbour] 
+                exp_limiter=2
+                wi[i_neighbour]=1/(sqrt((cellcentertocellcenterx[ind,i_neighbour])^2+(cellcentertocellcentery[ind,i_neighbour])^2))^exp_limiter
+                Amat[i_neighbour,1]=wi[i_neighbour]*cellcentertocellcenterx[ind,i_neighbour]
+                Amat[i_neighbour,2]=wi[i_neighbour]*cellcentertocellcentery[ind,i_neighbour]
+                bvec[i_neighbour]=wi[i_neighbour]*(p_old[i_A]-p_old[i_P])
+            end
+
+            if len_cellneighboursline>1
+                xvec=Amat[1:len_cellneighboursline,:]\bvec[1:len_cellneighboursline]
+                dpdx=xvec[1]
+                dpdy=xvec[2]            
+            else
+                dpdx=0
+                dpdy=0
+            end
+        elseif i_method==3
+            #least square solution to determine gradient - runtime optimized
+            cellneighboursline=cellneighboursarray[ind,:]
+            cellneighboursline=cellneighboursline[cellneighboursline .> 0]
+            len_cellneighboursline=length(cellneighboursline)
+            bvec=Vector{Float64}(undef,len_cellneighboursline)
+            Amat=Array{Float64}(undef,len_cellneighboursline,2) 
+            for i_neighbour in 1:len_cellneighboursline
+                i_P=ind
+                i_A=cellneighboursarray[ind,i_neighbour] 
                 Amat[i_neighbour,1]=cellcentertocellcenterx[ind,i_neighbour]
                 Amat[i_neighbour,2]=cellcentertocellcentery[ind,i_neighbour]
-                bvec[i_neighbour]=p_old[i_A]-p_old[i_P];
+                bvec[i_neighbour]=p_old[i_A]-p_old[i_P]
             end
             #xvec=Amat[1:len_cellneighboursline,:]\bvec[1:len_cellneighboursline];
             #dpdx=xvec[1];
             #dpdy=xvec[2];
 
             if len_cellneighboursline>1
-                Aplus=transpose(Amat)*Amat;
+                Aplus=transpose(Amat)*Amat
                 a=Aplus[1,1]
                 b=Aplus[1,2]
                 c=Aplus[2,1]
@@ -982,8 +982,8 @@ module rtmsim
                 dpdx = inv * d * bvec_mod[1] - inv * b * bvec_mod[2]
                 dpdy = -inv * c * bvec_mod[1] + inv * a * bvec_mod[2]
             else
-                dpdx=0;
-                dpdy=0;
+                dpdx=0
+                dpdy=0
             end
 
         end
@@ -1001,44 +1001,44 @@ module rtmsim
     - vars_P, vars_A :: 4-element Vector{Float}
     - meshparameters :: 3-element Vector{Float}
     """
-    function numerical_flux_function(i_method,vars_P,vars_A,meshparameters);
-        if i_method==1;
+    function numerical_flux_function(i_method,vars_P,vars_A,meshparameters)
+        if i_method==1
             #first order upwinding
-            rho_P=vars_P[1];
-            u_P=vars_P[2];
-            v_P=vars_P[3];
-            gamma_P=vars_P[4];
-            rho_A=vars_A[1];
-            u_A=vars_A[2];
-            v_A=vars_A[3];
-            gamma_A=vars_A[4];
-            n_x=meshparameters[1];
-            n_y=meshparameters[2];
-            A=meshparameters[3];
-            n_dot_rhou=dot([n_x; n_y],0.5*(rho_P+rho_A)*[0.5*(u_P+u_A); 0.5*(v_P+v_A)]);
-            phi=1;
-            F_rho_num_add=n_dot_rhou*phi*A;
-            if n_dot_rhou>=0;
-                phi=u_P;                                
+            rho_P=vars_P[1]
+            u_P=vars_P[2]
+            v_P=vars_P[3]
+            gamma_P=vars_P[4]
+            rho_A=vars_A[1]
+            u_A=vars_A[2]
+            v_A=vars_A[3]
+            gamma_A=vars_A[4]
+            n_x=meshparameters[1]
+            n_y=meshparameters[2]
+            A=meshparameters[3]
+            n_dot_rhou=dot([n_x; n_y],0.5*(rho_P+rho_A)*[0.5*(u_P+u_A); 0.5*(v_P+v_A)])
+            phi=1
+            F_rho_num_add=n_dot_rhou*phi*A
+            if n_dot_rhou>=0
+                phi=u_P                               
             else
-                phi=u_A;
+                phi=u_A
             end
-            F_u_num_add=n_dot_rhou*phi*A;     
-            if n_dot_rhou>=0;
-                phi=v_P;  
+            F_u_num_add=n_dot_rhou*phi*A   
+            if n_dot_rhou>=0
+                phi=v_P  
             else
-                phi=v_A;
+                phi=v_A
             end
-            F_v_num_add=n_dot_rhou*phi*A; 
-            n_dot_u=dot([n_x; n_y],[0.5*(u_P+u_A); 0.5*(v_P+v_A)]);
-            if n_dot_u>=0; 
-                phi=gamma_P;  
+            F_v_num_add=n_dot_rhou*phi*A
+            n_dot_u=dot([n_x; n_y],[0.5*(u_P+u_A); 0.5*(v_P+v_A)])
+            if n_dot_u>=0
+                phi=gamma_P 
             else
-                phi=gamma_A;
+                phi=gamma_A
             end  
-            F_gamma_num_add=n_dot_u*phi*A;
-            phi=1;
-            F_gamma_num1_add=n_dot_u*phi*A;
+            F_gamma_num_add=n_dot_u*phi*A
+            phi=1
+            F_gamma_num1_add=n_dot_u*phi*A
         end
         return F_rho_num_add,F_u_num_add,F_v_num_add,F_gamma_num_add,F_gamma_num1_add
     end
@@ -1055,43 +1055,43 @@ module rtmsim
     - meshparameters :: 3-element Vector{Float}
     - n_dot_u :: Float
     """
-    function numerical_flux_function_boundary(i_method,vars_P,vars_A,meshparameters,n_dot_u);
-        if i_method==1;
+    function numerical_flux_function_boundary(i_method,vars_P,vars_A,meshparameters,n_dot_u)
+        if i_method==1
             #first order upwinding
-            rho_P=vars_P[1];
-            u_P=vars_P[2];
-            v_P=vars_P[3];
-            gamma_P=vars_P[4];
-            rho_A=vars_A[1];
-            u_A=vars_A[2];
-            v_A=vars_A[3];
-            gamma_A=vars_A[4];
-            n_x=meshparameters[1];
-            n_y=meshparameters[2];
-            A=meshparameters[3];        
-            n_dot_rhou=n_dot_u*0.5*(rho_A+rho_P);
-            phi=1;
-            F_rho_num_add=n_dot_rhou*phi*A;
+            rho_P=vars_P[1]
+            u_P=vars_P[2]
+            v_P=vars_P[3]
+            gamma_P=vars_P[4]
+            rho_A=vars_A[1]
+            u_A=vars_A[2]
+            v_A=vars_A[3]
+            gamma_A=vars_A[4]
+            n_x=meshparameters[1]
+            n_y=meshparameters[2]
+            A=meshparameters[3]        
+            n_dot_rhou=n_dot_u*0.5*(rho_A+rho_P)
+            phi=1
+            F_rho_num_add=n_dot_rhou*phi*A
             if n_dot_u<=0 
-                phi=u_A;                   
+                phi=u_A                 
             else
-                phi=u_P;
+                phi=u_P
             end
-            F_u_num_add=n_dot_rhou*phi*A;
+            F_u_num_add=n_dot_rhou*phi*A
             if n_dot_u<=0 
-                phi=v_A;                   
+                phi=v_A                   
             else
-                phi=v_P;
+                phi=v_P
             end
-            F_v_num_add=n_dot_rhou*phi*A;
+            F_v_num_add=n_dot_rhou*phi*A
             if n_dot_u<=0 
-                phi=gamma_A;                   
+                phi=gamma_A                   
             else
-                phi=gamma_P;
+                phi=gamma_P
             end
-            F_gamma_num_add=n_dot_u*phi*A;
-            phi=1;
-            F_gamma_num1_add=n_dot_u*phi*A;
+            F_gamma_num_add=n_dot_u*phi*A
+            phi=1
+            F_gamma_num1_add=n_dot_u*phi*A
         end
         return F_rho_num_add,F_u_num_add,F_v_num_add,F_gamma_num_add,F_gamma_num1_add
     end
@@ -1101,7 +1101,7 @@ module rtmsim
     
      Deletes the intermediate jld2 output files.
     """
-    function delete_files();
+    function delete_files()
         #delete the intermediate output files
         rm.(glob("output_*.jld2"))
     end
@@ -1116,12 +1116,12 @@ module rtmsim
         - patch properties
     Read other mesh files than Nastran bulk data format (bdf) based on extension and calculate the required mesh data or convert to Nastran format prepare with existing function                
     """
-    function read_mesh(meshfilename,paramset,paramset1,paramset2,paramset3,paramset4,patchtype1val,patchtype2val,patchtype3val,patchtype4val,i_interactive,r_p);
+    function read_mesh(meshfilename,paramset,paramset1,paramset2,paramset3,paramset4,patchtype1val,patchtype2val,patchtype3val,patchtype4val,i_interactive,r_p)
 
         #read Nastran mesh
         if meshfilename[end-2:end]=="bdf"
            N,cellgridid,gridx,gridy,gridz,cellcenterx,cellcentery,cellcenterz,patchparameters,patchparameters1,patchparameters2,patchparameters3,patchparameters4,patchids1,patchids2,patchids3,patchids4,inletpatchids=
-                read_nastran_mesh(meshfilename,paramset,paramset1,paramset2,paramset3,paramset4,patchtype1val,patchtype2val,patchtype3val,patchtype4val,i_interactive,r_p);
+                read_nastran_mesh(meshfilename,paramset,paramset1,paramset2,paramset3,paramset4,patchtype1val,patchtype2val,patchtype3val,patchtype4val,i_interactive,r_p)
         end
    
         return N,cellgridid,gridx,gridy,gridz,cellcenterx,cellcentery,cellcenterz,patchparameters,patchparameters1,patchparameters2,patchparameters3,patchparameters4,patchids1,patchids2,patchids3,patchids4,inletpatchids
@@ -1142,94 +1142,106 @@ module rtmsim
     Unit test:
     - `MODULE_ROOT=splitdir(splitdir(pathof(rtmsim))[1])[1]; meshfilename=joinpath(MODULE_ROOT,"meshfiles","mesh_permeameter1_foursets.bdf"); paramset=[0.5,0.3,3e-10,1.0,1.0,0.0,0.0];paramset1=paramset;paramset2=paramset;paramset3=paramset;paramset4=paramset;patchtype1val=-1;patchtype2val=-1;patchtype3val=-1;patchtype4val=-1;i_interactive=0;r_p=0.01; N,cellgridid,gridx,gridy,gridz,cellcenterx,cellcentery,cellcenterz,patchparameters,patchparameters1,patchparameters2,patchparameters3,patchparameters4,patchids1,patchids2,patchids3,patchids4,inletpatchids=rtmsim.read_mesh(meshfilename,paramset,paramset1,paramset2,paramset3,paramset4,patchtype1val,patchtype2val,patchtype3val,patchtype4val,i_interactive,r_p);`
     """
-    function read_nastran_mesh(meshfilename,paramset,paramset1,paramset2,paramset3,paramset4,patchtype1val,patchtype2val,patchtype3val,patchtype4val,i_interactive,r_p);
+    function read_nastran_mesh(meshfilename,paramset,paramset1,paramset2,paramset3,paramset4,patchtype1val,patchtype2val,patchtype3val,patchtype4val,i_interactive,r_p)
 
-        if ~isfile(meshfilename);
-            errorstring=string("File ",meshfilename," not existing"* "\n"); 
-            error(errorstring);
+        if ~isfile(meshfilename)
+            errorstring="File $(meshfilename) not existing\n" 
+            error(errorstring)
         end
-        ind=Int64(1);
-        gridind=Int64(1);
-        setind=Int64(1);
-        issetdefinition=Int64(0);
-        patchorigids1=[];
-        patchorigids2=[];
-        patchorigids3=[];
-        patchorigids4=[];
-        origgridid=[];
-        gridx=[];
-        gridy=[];
-        gridz=[];
-        celloriggridid=[];
-        cellgridid=Array{Int64}(undef, 0, 3);
-        inletpatchids=[];
+        ind=Int64(1)
+        gridind=Int64(1)
+        setind=Int64(1)
+        issetdefinition=Int64(0)
+        patchorigids1=[]
+        patchorigids2=[]
+        patchorigids3=[]
+        patchorigids4=[]
+        origgridid=[]
+        gridx=[]
+        gridy=[]
+        gridz=[]
+        celloriggridid=[]
+        cellgridid=Array{Int64}(undef, 0, 3)
+        inletpatchids=[]
         
         open(meshfilename, "r") do fid
-            line=1;
+            line=1
             while !eof(fid)
                 thisline=readline(fid)
-                if length(thisline)>=8;
-                    if issetdefinition==1; 
-                        if cmp( thisline[1:8],"        ")!=0;  #check if the first eight characters are empty, else issetdefinition=0;
-                             issetdefinition=Int64(0);
-                             setind=setind+1;
+                if length(thisline)>=8
+                    if issetdefinition==1 
+                        if cmp( thisline[1:8],"        ")!=0  #check if the first eight characters are empty, else issetdefinition=0;
+                             issetdefinition=Int64(0)
+                             setind=setind+1
                         end
                     end
-                    card=thisline[1:8];
+                    card=thisline[1:8]
                     if cmp(card,"GRID    ")==0
-                        gridindstring=thisline[9:16];
-                        origgridid=vcat(origgridid,parse(Int64,gridindstring));                        
-                        txt=thisline[25:32];
-                        txt=replace(txt," "=> "");txt=replace(txt,"E" => "");txt=replace(txt,"e" => "");
-                        txt1=replace(txt,"-" => "e-");txt1=replace(txt1,"+" => "e+");
-                        if cmp(txt1[1],'e')==0;txt2=txt1[2:end];else;txt2=txt1;end;
-                        val=parse(Float64,txt2);
-                        val1=val;
-                        txt=thisline[33:40];
-                        txt=replace(txt," "=> "");txt=replace(txt,"E" => "");txt=replace(txt,"e" => "");
-                        txt1=replace(txt,"-" => "e-");txt1=replace(txt1,"+" => "e+");
-                        if cmp(txt1[1],'e')==0;txt2=txt1[2:end];else;txt2=txt1;end;
-                        val=parse(Float64,txt2);
-                        val2=val;
-                        txt=thisline[41:48];
-                        txt=replace(txt," "=> "");txt=replace(txt,"E" => "");txt=replace(txt,"e" => "");
-                        txt1=replace(txt,"-" => "e-");txt1=replace(txt1,"+" => "e+");
-                        if cmp(txt1[1],'e')==0;txt2=txt1[2:end];else;txt2=txt1;end;
-                        val=parse(Float64,txt2);
-                        val3=val;
-                        gridx=vcat(gridx,Float64(val1));
-                        gridy=vcat(gridy,Float64(val2));
-                        gridz=vcat(gridz,Float64(val3));
-                        gridind=gridind+1;
-                    elseif cmp(card,"CTRIA3  ")==0;        
-                        celloriggridid=vcat(celloriggridid,parse(Int64,thisline[9:16]));
-                        i1val=parse(Int64,thisline[25:32]);
-                        i1=findfirst(isequal(i1val),origgridid);
-                        i2val=parse(Int64,thisline[33:40]);
-                        i2=findfirst(isequal(i2val),origgridid);
-                        i3val=parse(Int64,thisline[41:48]);
-                        i3=findfirst(isequal(i3val),origgridid);
-                        ivec=[i1,i2,i3];
-                        idel=findall(isequal(min(ivec[1],ivec[2],ivec[3])),ivec);
+                        gridindstring=thisline[9:16]
+                        origgridid=vcat(origgridid,parse(Int64,gridindstring))                       
+                        txt=thisline[25:32]
+                        txt=replace(txt," "=> "");txt=replace(txt,"E" => "");txt=replace(txt,"e" => "")
+                        txt1=replace(txt,"-" => "e-");txt1=replace(txt1,"+" => "e+")
+                        if cmp(txt1[1],'e')==0
+                            txt2=txt1[2:end]
+                        else
+                            txt2=txt1
+                        end
+                        val=parse(Float64,txt2)
+                        val1=val
+                        txt=thisline[33:40]
+                        txt=replace(txt," "=> "");txt=replace(txt,"E" => "");txt=replace(txt,"e" => "")
+                        txt1=replace(txt,"-" => "e-");txt1=replace(txt1,"+" => "e+")
+                        if cmp(txt1[1],'e')==0
+                            txt2=txt1[2:end]
+                        else
+                            txt2=txt1
+                        end
+                        val=parse(Float64,txt2)
+                        val2=val
+                        txt=thisline[41:48]
+                        txt=replace(txt," "=> "");txt=replace(txt,"E" => "");txt=replace(txt,"e" => "")
+                        txt1=replace(txt,"-" => "e-");txt1=replace(txt1,"+" => "e+")
+                        if cmp(txt1[1],'e')==0
+                            txt2=txt1[2:end]
+                        else
+                            txt2=txt1
+                        end
+                        val=parse(Float64,txt2)
+                        val3=val
+                        gridx=vcat(gridx,val1)
+                        gridy=vcat(gridy,val2)
+                        gridz=vcat(gridz,val3)
+                        gridind=gridind+1
+                    elseif cmp(card,"CTRIA3  ")==0        
+                        celloriggridid=vcat(celloriggridid,parse(Int64,thisline[9:16]))
+                        i1val=parse(Int64,thisline[25:32])
+                        i1=findfirst(isequal(i1val),origgridid)
+                        i2val=parse(Int64,thisline[33:40])
+                        i2=findfirst(isequal(i2val),origgridid)
+                        i3val=parse(Int64,thisline[41:48])
+                        i3=findfirst(isequal(i3val),origgridid)
+                        ivec=[i1,i2,i3]
+                        idel=findall(isequal(min(ivec[1],ivec[2],ivec[3])),ivec)
                         deleteat!(ivec,idel)
-                        idel=findall(isequal(max(ivec[1],ivec[2])),ivec);
+                        idel=findall(isequal(max(ivec[1],ivec[2])),ivec)
                         deleteat!(ivec,idel)                        
-                        cellgridid=vcat(cellgridid,[min(i1,i2,i3) ivec[1] max(i1,i2,i3)]);
-                        ind=ind+1;    
-                    elseif cmp( card[1:3],"SET")==0 || issetdefinition==1;
-                        issetdefinition=1;
-                        txt1=thisline[9:end];
-                        txt1=replace(txt1," "=> "");
-                        txt2=split(txt1,",");
-                        for i in 1:length(txt2);
-                            if !isempty(txt2[i]);
-                                if setind==1; 
+                        cellgridid=vcat(cellgridid,[min(i1,i2,i3) ivec[1] max(i1,i2,i3)])
+                        ind=ind+1   
+                    elseif cmp( card[1:3],"SET")==0 || issetdefinition==1
+                        issetdefinition=1
+                        txt1=thisline[9:end]
+                        txt1=replace(txt1," "=> "")
+                        txt2=split(txt1,",")
+                        for i in 1:length(txt2)
+                            if !isempty(txt2[i])
+                                if setind==1
                                     patchorigids1=vcat(patchorigids1,parse(Int64,txt2[i]))
-                                elseif setind==2;
+                                elseif setind==2
                                     patchorigids2=vcat(patchorigids2,parse(Int64,txt2[i]))
-                                elseif setind==3;
+                                elseif setind==3
                                     patchorigids3=vcat(patchorigids3,parse(Int64,txt2[i]))
-                                elseif setind==4;
+                                elseif setind==4
                                     patchorigids4=vcat(patchorigids4,parse(Int64,txt2[i]))
                                 end
                             end
@@ -1239,109 +1251,109 @@ module rtmsim
                 line+=1
             end
         end
-        N=ind-1;  #total number of cells
+        N=ind-1  #total number of cells
         
         #loop to define cell center coordinates in global CS
-        cellcenterx=[];
-        cellcentery=[];
-        cellcenterz=[];
-        for ind in 1:N;
-            i1=cellgridid[ind,1];
-            i2=cellgridid[ind,2];
-            i3=cellgridid[ind,3];
-            cellcenterx=vcat(cellcenterx,(gridx[i1]+gridx[i2]+gridx[i3])/3);
-            cellcentery=vcat(cellcentery,(gridy[i1]+gridy[i2]+gridy[i3])/3);
-            cellcenterz=vcat(cellcenterz,(gridz[i1]+gridz[i2]+gridz[i3])/3);
+        cellcenterx=[]
+        cellcentery=[]
+        cellcenterz=[]
+        for ind in 1:N
+            i1=cellgridid[ind,1]
+            i2=cellgridid[ind,2]
+            i3=cellgridid[ind,3]
+            cellcenterx=vcat(cellcenterx,(gridx[i1]+gridx[i2]+gridx[i3])/3)
+            cellcentery=vcat(cellcentery,(gridy[i1]+gridy[i2]+gridy[i3])/3)
+            cellcenterz=vcat(cellcenterz,(gridz[i1]+gridz[i2]+gridz[i3])/3)
         end
 
-        if i_interactive==1;
+        if i_interactive==1
             assign_pset(r_p,N,cellcenterx,cellcentery,cellcenterz)
             psetfilename="pset.jld2"
-            if ~isfile(psetfilename);
-                errorstring=string("File ",psetfilename," not existing"* "\n"); 
-                error(errorstring);
+            if ~isfile(psetfilename)
+                errorstring="File $(psetfilename) not existing\n"
+                error(errorstring)
             end
-            @load psetfilename pset;
-            inletpatchids=pset;
-            if length(inletpatchids)<1;
-                errorstring=string("Inlet definition empty"* "\n"); 
-                error(errorstring);
+            @load psetfilename pset
+            inletpatchids=pset
+            if length(inletpatchids)<1
+                errorstring="Inlet definition empty\n"
+                error(errorstring)
             end
-            patchids1=[];
-            patchids2=[];
-            patchids3=[];
-            patchids4=[];   
-            patchparameters=paramset;
-            patchparameters1=[];
-            patchparameters2=[];
-            patchparameters3=[];
-            patchparameters4=[];        
+            patchids1=[]
+            patchids2=[]
+            patchids3=[]
+            patchids4=[]  
+            patchparameters=paramset
+            patchparameters1=[]
+            patchparameters2=[]
+            patchparameters3=[]
+            patchparameters4=[]      
         else
-            patchids1=[];
-            patchids2=[];
-            patchids3=[];
-            patchids4=[];
-            for i in 1:length(patchorigids1);
-                i1=findfirst(isequal(patchorigids1[i]),celloriggridid);
-                patchids1=vcat(patchids1,i1);
+            patchids1=[]
+            patchids2=[]
+            patchids3=[]
+            patchids4=[]
+            for i in 1:length(patchorigids1)
+                i1=findfirst(isequal(patchorigids1[i]),celloriggridid)
+                patchids1=vcat(patchids1,i1)
             end
-            for i=1:length(patchorigids2);
-                i1=findfirst(isequal(patchorigids2[i]),celloriggridid);
-                patchids2=vcat(patchids2,i1);
+            for i=1:length(patchorigids2)
+                i1=findfirst(isequal(patchorigids2[i]),celloriggridid)
+                patchids2=vcat(patchids2,i1)
             end
-            for i=1:length(patchorigids3);
-                i1=findfirst(isequal(patchorigids3[i]),celloriggridid);
-                patchids3=vcat(patchids3,i1);
+            for i=1:length(patchorigids3)
+                i1=findfirst(isequal(patchorigids3[i]),celloriggridid)
+                patchids3=vcat(patchids3,i1)
             end
-            for i=1:length(patchorigids4);
-                i1=findfirst(isequal(patchorigids4[i]),celloriggridid);
-                patchids4=vcat(patchids4,i1);
+            for i=1:length(patchorigids4)
+                i1=findfirst(isequal(patchorigids4[i]),celloriggridid)
+                patchids4=vcat(patchids4,i1)
             end
-            if i_interactive==2;
+            if i_interactive==2
                 assign_pset(r_p,N,cellcenterx,cellcentery,cellcenterz)
                 psetfilename="pset.jld2"
-                if ~isfile(psetfilename);
-                    errorstring=string("File ",psetfilename," not existing"* "\n"); 
-                    error(errorstring);
+                if ~isfile(psetfilename)
+                    errorstring="File $(psetfilename) not existing\n"
+                    error(errorstring)
                 end
-                @load psetfilename pset;
-                inletpatchids=pset;
-                if length(patchids1)<1;
-                    errorstring=string("Inlet definition empty"* "\n"); 
-                    error(errorstring);
+                @load psetfilename pset
+                inletpatchids=pset
+                if length(patchids1)<1
+                    errorstring="Inlet definition empty\n" 
+                    error(errorstring)
                 end
             end
-            patchparameters=paramset;
-            patchparameters1=[];
-            patchparameters2=[];
-            patchparameters3=[];
-            patchparameters4=[];
-            for i_patch in 1:4;
-                if i_patch==1;
-                    patchids=patchids1;
-                elseif i_patch==2;
-                    patchids=patchids2;
-                elseif i_patch==3;
-                    patchids=patchids3;
-                elseif i_patch==4;
-                    patchids=patchids4;
+            patchparameters=paramset
+            patchparameters1=[]
+            patchparameters2=[]
+            patchparameters3=[]
+            patchparameters4=[]
+            for i_patch in 1:4
+                if i_patch==1
+                    patchids=patchids1
+                elseif i_patch==2
+                    patchids=patchids2
+                elseif i_patch==3
+                    patchids=patchids3
+                elseif i_patch==4
+                    patchids=patchids4
                 end
-                if !isempty(patchids);
-                    if i_patch==1;
-                        if patchtype1val==2;
-                            patchparameters1=paramset1;
+                if !isempty(patchids)
+                    if i_patch==1
+                        if patchtype1val==2
+                            patchparameters1=paramset1
                         end
-                    elseif i_patch==2;
-                        if patchtype2val==2;
-                            patchparameters2=paramset2;
+                    elseif i_patch==2
+                        if patchtype2val==2
+                            patchparameters2=paramset2
                         end
-                    elseif i_patch==3;
-                        if patchtype3val==2; 
-                            patchparameters3=paramset3;
+                    elseif i_patch==3
+                        if patchtype3val==2 
+                            patchparameters3=paramset3
                         end
-                    elseif i_patch==4;
-                        if patchtype4val==2;
-                            patchparameters4=paramset4;
+                    elseif i_patch==4
+                        if patchtype4val==2
+                            patchparameters4=paramset4
                         end
                     end
                 end
