@@ -1371,67 +1371,67 @@ module rtmsim
     """
     function create_faces(cellgridid, N, maxnumberofneighbours);
         celltype=Vector{Int64}(undef, N);
-        for i in 1:N;
-            celltype[i]=1;
+        for i in 1:N
+            celltype[i]=1
         end
-        faces=Array{Int64}(undef, 0, 3);   #three columns: grid id1, grid id2, cell id
-        i=1;
+        faces=Array{Int64}(undef, 0, 3)   #three columns: grid id1, grid id2, cell id
+        # i=1
         for ind=1:N
-            i1=cellgridid[ind,1];
-            i2=cellgridid[ind,2];    
-            faces=vcat(faces,[min(i1,i2) max(i1,i2) ind]);
-            i=i+1;
-            i1=cellgridid[ind,2];
-            i2=cellgridid[ind,3];    
-            faces=vcat(faces,[min(i1,i2) max(i1,i2) ind]);
-            i=i+1;
-            i1=cellgridid[ind,3];
-            i2=cellgridid[ind,1];    
-            faces=vcat(faces,[min(i1,i2) max(i1,i2) ind]);
-            i=i+1;
+            i1=cellgridid[ind,1]
+            i2=cellgridid[ind,2]    
+            faces=vcat(faces,[min(i1,i2) max(i1,i2) ind])
+            # i=i+1
+            i1=cellgridid[ind,2]
+            i2=cellgridid[ind,3]    
+            faces=vcat(faces,[min(i1,i2) max(i1,i2) ind])
+            # i=i+1
+            i1=cellgridid[ind,3]
+            i2=cellgridid[ind,1]   
+            faces=vcat(faces,[min(i1,i2) max(i1,i2) ind])
+            # i=i+1
         end
-        facessorted=sortslices(faces,dims=1);
-        vals1=unique(facessorted[:,1]);  
+        facessorted=sortslices(faces,dims=1)
+        vals1=unique(facessorted[:,1]) 
 
         # this must be generalized, currently only hard-coded number of neighbouring cells of a tria is possible
         # all considered cases had <<10 neighbouring cells 
-        cellneighboursarray=Array{Int64}(undef, N, maxnumberofneighbours);
-        for ind in 1:N;
-            for ind_n in 1:maxnumberofneighbours;
-                 cellneighboursarray[ind,ind_n]=-9;
+        cellneighboursarray=Array{Int64}(undef, N, maxnumberofneighbours)
+        for ind in 1:N
+            for ind_n in 1:maxnumberofneighbours
+                 cellneighboursarray[ind,ind_n]=-9
             end
         end
 
-        for i in 1:length(vals1);
-            inds2=findall(isequal(vals1[i]), facessorted[:,1]);
-            facesdetail_unsorted=facessorted[inds2,2:3];
-            facesdetail=sortslices(facesdetail_unsorted,dims=1);
-            for j=1:size(facesdetail,1);
-                i1=facesdetail[j,2];
-                inds3=findall(isequal(facesdetail[j,1]),facesdetail[:,1]);
-                inds4=findall(!isequal(j),inds3);
-                inds5=inds3[inds4];
-                if isempty(inds5);
-                    celltype[i1]=-3;  #wall
+        for i in 1:length(vals1)
+            inds2=findall(isequal(vals1[i]), facessorted[:,1])
+            facesdetail_unsorted=facessorted[inds2,2:3]
+            facesdetail=sortslices(facesdetail_unsorted,dims=1)
+            for j=1:size(facesdetail,1)
+                i1=facesdetail[j,2]
+                inds3=findall(isequal(facesdetail[j,1]),facesdetail[:,1])
+                inds4=findall(!isequal(j),inds3)
+                inds5=inds3[inds4]
+                if isempty(inds5)
+                    celltype[i1]=-3  #wall
                 else
-                    if j==1;
-                        for k in 1:length(inds5);
-                            matrixrow=cellneighboursarray[i1,:];
-                            indcolumn=findfirst(isequal(-9),matrixrow); 
+                    if j==1
+                        for k in 1:length(inds5)
+                            matrixrow=cellneighboursarray[i1,:]
+                            indcolumn=findfirst(isequal(-9),matrixrow)
                             if isnothing(indcolumn)
-                                error("More than 10 neighbours of one tria is not supported \n");
+                                error("More than 10 neighbours of one tria is not supported \n")
                             else
-                                cellneighboursarray[i1,indcolumn]=facesdetail[inds5[k],2];
+                                cellneighboursarray[i1,indcolumn]=facesdetail[inds5[k],2]
                             end
                         end
                     else
-                       for k in 1:1; 
-                            matrixrow=cellneighboursarray[i1,:];
-                            indcolumn=findfirst(isequal(-9),matrixrow); 
+                       for k in 1:1
+                            matrixrow=cellneighboursarray[i1,:]
+                            indcolumn=findfirst(isequal(-9),matrixrow) 
                             if isnothing(indcolumn)
-                                error("More than 10 neighbours of one tria is not supported"* "\n");
+                                error("More than 10 neighbours of one tria is not supported\n")
                             else
-                                cellneighboursarray[i1,indcolumn]=facesdetail[inds5[k],2];
+                                cellneighboursarray[i1,indcolumn]=facesdetail[inds5[k],2]
                             end
                         end
                     end
@@ -1447,141 +1447,141 @@ module rtmsim
     
     Assign properties to cells.
     """
-    function assign_parameters(i_interactive,celltype,patchparameters0,patchparameters1,patchparameters2,patchparameters3,patchparameters4,patchtype1val,patchtype2val,patchtype3val,patchtype4val,patchids1,patchids2,patchids3,patchids4,inletpatchids,mu_resin_val,N);
-        cellthickness=Vector{Float64}(undef, N);
-        cellporosity=Vector{Float64}(undef, N);
-        cellpermeability=Vector{Float64}(undef, N);
-        cellalpha=Vector{Float64}(undef, N);
-        celldirection=Array{Float64}(undef, N,3);
-        cellviscosity=Vector{Float64}(undef, N);
+    function assign_parameters(i_interactive,celltype,patchparameters0,patchparameters1,patchparameters2,patchparameters3,patchparameters4,patchtype1val,patchtype2val,patchtype3val,patchtype4val,patchids1,patchids2,patchids3,patchids4,inletpatchids,mu_resin_val,N)
+        cellthickness=Vector{Float64}(undef, N)
+        cellporosity=Vector{Float64}(undef, N)
+        cellpermeability=Vector{Float64}(undef, N)
+        cellalpha=Vector{Float64}(undef, N)
+        celldirection=Array{Float64}(undef, N,3)
+        cellviscosity=Vector{Float64}(undef, N)
 
-        if i_interactive==0 || i_interactive==2;
-            if patchtype1val==1;
-                for i in 1:N;
-                    ind=findfirst(isequal(i),patchids1);
+        if i_interactive==0 || i_interactive==2
+            if patchtype1val==1
+                for i in 1:N
+                    ind=findfirst(isequal(i),patchids1)
                     if ~isnothing(ind)
-                        celltype[i]=-1;
+                        celltype[i]=-1
                     end
                 end                
-            elseif patchtype1val==3;
-                for i in 1:N;
-                    ind=findfirst(isequal(i),patchids1);
+            elseif patchtype1val==3
+                for i in 1:N
+                    ind=findfirst(isequal(i),patchids1)
                     if ~isnothing(ind)
-                        celltype[i]=-2;
+                        celltype[i]=-2
                     end
                 end                  
             end
-            if patchtype2val==1;
-                for i in 1:N;
-                    ind=findfirst(isequal(i),patchids2);
+            if patchtype2val==1
+                for i in 1:N
+                    ind=findfirst(isequal(i),patchids2)
                     if ~isnothing(ind)
-                        celltype[i]=-1;
+                        celltype[i]=-1
                     end
                 end
-            elseif patchtype2val==3;
-                for i in 1:N;
-                    ind=findfirst(isequal(i),patchids2);
+            elseif patchtype2val==3
+                for i in 1:N
+                    ind=findfirst(isequal(i),patchids2)
                     if ~isnothing(ind)
-                        celltype[i]=-2;
-                    end
-                end
-            end
-            if patchtype3val==1;
-                for i in 1:N;
-                    ind=findfirst(isequal(i),patchids3);
-                    if ~isnothing(ind)
-                        celltype[i]=-1;
-                    end
-                end
-            elseif patchtype3val==3;
-                for i in 1:N;
-                    ind=findfirst(isequal(i),patchids3);
-                    if ~isnothing(ind)
-                        celltype[i]=-2;
+                        celltype[i]=-2
                     end
                 end
             end
-            if patchtype4val==1;
-                for i in 1:N;
-                    ind=findfirst(isequal(i),patchids4);
+            if patchtype3val==1
+                for i in 1:N
+                    ind=findfirst(isequal(i),patchids3)
                     if ~isnothing(ind)
-                        celltype[i]=-1;
+                        celltype[i]=-1
                     end
                 end
-            elseif patchtype4val==3;
-                for i in 1:N;
-                    ind=findfirst(isequal(i),patchids4);
+            elseif patchtype3val==3
+                for i in 1:N
+                    ind=findfirst(isequal(i),patchids3)
                     if ~isnothing(ind)
-                        celltype[i]=-2;
+                        celltype[i]=-2
+                    end
+                end
+            end
+            if patchtype4val==1
+                for i in 1:N
+                    ind=findfirst(isequal(i),patchids4)
+                    if ~isnothing(ind)
+                        celltype[i]=-1
+                    end
+                end
+            elseif patchtype4val==3
+                for i in 1:N
+                    ind=findfirst(isequal(i),patchids4)
+                    if ~isnothing(ind)
+                        celltype[i]=-2
                     end
                 end
             end
         end
-        if i_interactive==1 || i_interactive==2;
-            for i in 1:N;
-                ind=findfirst(isequal(i),inletpatchids);
+        if i_interactive==1 || i_interactive==2
+            for i in 1:N
+                ind=findfirst(isequal(i),inletpatchids)
                 if ~isnothing(ind)
-                    celltype[i]=-1;
+                    celltype[i]=-1
                 end
             end
         end        
-        for ind in 1:N;
-            if i_interactive==1;
+        for ind in 1:N
+            if i_interactive==1
                 #thickness
-                cellthickness[ind]=patchparameters0[2];
+                cellthickness[ind]=patchparameters0[2]
                 #porosity
-                cellporosity[ind]=patchparameters0[1]; 
+                cellporosity[ind]=patchparameters0[1]
                 #isotropic permeability 
-                cellpermeability[ind]=patchparameters0[3];            
+                cellpermeability[ind]=patchparameters0[3]          
                 #alpha permeability 
-                cellalpha[ind]=patchparameters0[4];
+                cellalpha[ind]=patchparameters0[4]
                 #primary direction
-                vec=[patchparameters0[5] patchparameters0[6] patchparameters0[7]];
-                celldirection[ind,:]=vec/sqrt(dot(vec,vec));
+                vec=[patchparameters0[5] patchparameters0[6] patchparameters0[7]]
+                celldirection[ind,:]=vec/sqrt(dot(vec,vec))
                 #viscosity
-                cellviscosity[ind]=mu_resin_val; 
+                cellviscosity[ind]=mu_resin_val
             else
-                ind1=findfirst(isequal(ind),patchids1);
-                ind2=findfirst(isequal(ind),patchids2);
-                ind3=findfirst(isequal(ind),patchids3);
-                ind4=findfirst(isequal(ind),patchids4);
+                ind1=findfirst(isequal(ind),patchids1)
+                ind2=findfirst(isequal(ind),patchids2)
+                ind3=findfirst(isequal(ind),patchids3)
+                ind4=findfirst(isequal(ind),patchids4)
                 if (patchtype1val==2 && ~isnothing(ind1)) 
-                    patchparameters=patchparameters1;
+                    patchparameters=patchparameters1
                 elseif (patchtype2val==2 && ~isnothing(ind2)) 
-                    patchparameters=patchparameters2;
+                    patchparameters=patchparameters2
                 elseif (patchtype3val==2 && ~isnothing(ind3)) 
-                    patchparameters=patchparameters3;
+                    patchparameters=patchparameters3
                 elseif (patchtype4val==2 && ~isnothing(ind4)) 
-                    patchparameters=patchparameters4;
+                    patchparameters=patchparameters4
                 end
-                if (patchtype1val==2 && issubset(ind,patchids1)) || (patchtype2val==2 && issubset(ind,patchids2)) || (patchtype3val==2 && issubset(ind,patchids3)) || (patchtype4val==2 && issubset(ind,patchids4));
+                if (patchtype1val==2 && issubset(ind,patchids1)) || (patchtype2val==2 && issubset(ind,patchids2)) || (patchtype3val==2 && issubset(ind,patchids3)) || (patchtype4val==2 && issubset(ind,patchids4))
                     #thickness
-                    cellthickness[ind]=patchparameters[2];
+                    cellthickness[ind]=patchparameters[2]
                     #porosity
-                    cellporosity[ind]=patchparameters[1]; 
+                    cellporosity[ind]=patchparameters[1]
                     #isotropic permeability 
-                    cellpermeability[ind]=patchparameters[3];            
+                    cellpermeability[ind]=patchparameters[3]          
                     #alpha permeability 
-                    cellalpha[ind]=patchparameters[4];
+                    cellalpha[ind]=patchparameters[4]
                     #primary direction
-                    vec=[patchparameters[5] patchparameters[6] patchparameters[7]];
-                    celldirection[ind,:]=vec/sqrt(dot(vec,vec));
+                    vec=[patchparameters[5] patchparameters[6] patchparameters[7]]
+                    celldirection[ind,:]=vec/sqrt(dot(vec,vec))
                     #viscosity
-                    cellviscosity[ind]=mu_resin_val; 
+                    cellviscosity[ind]=mu_resin_val 
                 else
                     #thickness
-                    cellthickness[ind]=patchparameters0[2];
+                    cellthickness[ind]=patchparameters0[2]
                     #porosity
-                    cellporosity[ind]=patchparameters0[1]; 
+                    cellporosity[ind]=patchparameters0[1] 
                     #isotropic permeability 
-                    cellpermeability[ind]=patchparameters0[3];            
+                    cellpermeability[ind]=patchparameters0[3]           
                     #alpha permeability 
-                    cellalpha[ind]=patchparameters0[4];
+                    cellalpha[ind]=patchparameters0[4]
                     #primary direction
-                    vec=[patchparameters0[5] patchparameters0[6] patchparameters0[7]];
-                    celldirection[ind,:]=vec/sqrt(dot(vec,vec));
+                    vec=[patchparameters0[5] patchparameters0[6] patchparameters0[7]]
+                    celldirection[ind,:]=vec/sqrt(dot(vec,vec))
                     #viscosity
-                    cellviscosity[ind]=mu_resin_val; 
+                    cellviscosity[ind]=mu_resin_val
                 end
             end
         end
@@ -1594,117 +1594,117 @@ module rtmsim
 
     Define the local cell coordinate system and the transformation matrix from the local cell coordinate system from the neighbouring cell to the local cell coordinate system of the considered cell
     """
-    function create_coordinate_systems(N, cellgridid, gridx, gridy, gridz, cellcenterx,cellcentery,cellcenterz, faces, cellneighboursarray, celldirection, cellthickness, maxnumberofneighbours);
-        cellvolume=Vector{Float64}(undef, N);
-        cellcentertocellcenterx=Array{Float64}(undef, N, maxnumberofneighbours);
-        cellcentertocellcentery=Array{Float64}(undef, N, maxnumberofneighbours);
-        T11=Array{Float64}(undef, N, maxnumberofneighbours);
-        T12=Array{Float64}(undef, N, maxnumberofneighbours);
-        T21=Array{Float64}(undef, N, maxnumberofneighbours);
-        T22=Array{Float64}(undef, N, maxnumberofneighbours);
-        cellfacenormalx=Array{Float64}(undef, N, maxnumberofneighbours);
-        cellfacenormaly=Array{Float64}(undef, N, maxnumberofneighbours);
-        cellfacearea=Array{Float64}(undef, N, maxnumberofneighbours);
-        for ind in 1:N;
-            cellvolume[ind]=-9;
-            for ind_n in 1:maxnumberofneighbours;
-                cellcentertocellcenterx[ind,ind_n]=-9.0;
-                cellcentertocellcentery[ind,ind_n]=-9.0;
-                T11[ind,ind_n]=-9.0;
-                T12[ind,ind_n]=-9.0;
-                T21[ind,ind_n]=-9.0;
-                T22[ind,ind_n]=-9.0;
-                cellfacenormalx[ind,ind_n]=-9.0;
-                cellfacenormaly[ind,ind_n]=-9.0;
-                cellfacearea[ind,ind_n]=-9.0;
+    function create_coordinate_systems(N, cellgridid, gridx, gridy, gridz, cellcenterx,cellcentery,cellcenterz, faces, cellneighboursarray, celldirection, cellthickness, maxnumberofneighbours)
+        cellvolume=Vector{Float64}(undef, N)
+        cellcentertocellcenterx=Array{Float64}(undef, N, maxnumberofneighbours)
+        cellcentertocellcentery=Array{Float64}(undef, N, maxnumberofneighbours)
+        T11=Array{Float64}(undef, N, maxnumberofneighbours)
+        T12=Array{Float64}(undef, N, maxnumberofneighbours)
+        T21=Array{Float64}(undef, N, maxnumberofneighbours)
+        T22=Array{Float64}(undef, N, maxnumberofneighbours)
+        cellfacenormalx=Array{Float64}(undef, N, maxnumberofneighbours)
+        cellfacenormaly=Array{Float64}(undef, N, maxnumberofneighbours)
+        cellfacearea=Array{Float64}(undef, N, maxnumberofneighbours)
+        for ind in 1:N
+            cellvolume[ind]=-9
+            for ind_n in 1:maxnumberofneighbours
+                cellcentertocellcenterx[ind,ind_n]=-9.0
+                cellcentertocellcentery[ind,ind_n]=-9.0
+                T11[ind,ind_n]=-9.0
+                T12[ind,ind_n]=-9.0
+                T21[ind,ind_n]=-9.0
+                T22[ind,ind_n]=-9.0
+                cellfacenormalx[ind,ind_n]=-9.0
+                cellfacenormaly[ind,ind_n]=-9.0
+                cellfacearea[ind,ind_n]=-9.0
             end
         end
-        b1=Array{Float64}(undef, N, 3);
-        b2=Array{Float64}(undef, N, 3);
-        b3=Array{Float64}(undef, N, 3);
-        gridxlocal=Array{Float64}(undef, N, 3);
-        gridylocal=Array{Float64}(undef, N, 3);
-        gridzlocal=Array{Float64}(undef, N, 3);
-        theta=Vector{Float64}(undef, N);
+        b1=Array{Float64}(undef, N, 3)
+        b2=Array{Float64}(undef, N, 3)
+        b3=Array{Float64}(undef, N, 3)
+        gridxlocal=Array{Float64}(undef, N, 3)
+        gridylocal=Array{Float64}(undef, N, 3)
+        gridzlocal=Array{Float64}(undef, N, 3)
+        theta=Vector{Float64}(undef, N)
 
-        for ind in 1:N;
+        for ind in 1:N
             # First, an intermediate orthonormal basis {b1, b2, b3} is created with 
             # first direction pointing from node with smallest ID to node with medium ID, 
             # second direction pointing in the orthogonal component from node with smallest ID to node with highest ID and 
             # third direction given by the cross product of the first two directions. 
             # The origin of the local coordinate system is the geometric center of the triangular cell. 
-            i1=cellgridid[ind,1];
-            i2=cellgridid[ind,2];
-            i3=cellgridid[ind,3];  
-            b1[ind,1:3]=[gridx[i2]-gridx[i1] gridy[i2]-gridy[i1] gridz[i2]-gridz[i1]];
-            b1[ind,1:3]=b1[ind,1:3]/sqrt(dot(b1[ind,1:3],b1[ind,1:3]));
-            a2=[gridx[i3]-gridx[i1] gridy[i3]-gridy[i1] gridz[i3]-gridz[i1]]';
-            a2=a2/sqrt(dot(a2,a2));
-            b2[ind,1:3]=a2-dot(b1[ind,1:3],a2)/dot(b1[ind,1:3],b1[ind,1:3])*b1[ind,1:3];
-            b2[ind,1:3]=b2[ind,1:3]/sqrt(dot(b2[ind,1:3],b2[ind,1:3]));
-            b3[ind,1:3]=cross(b1[ind,1:3],b2[ind,1:3]);   
+            i1=cellgridid[ind,1]
+            i2=cellgridid[ind,2]
+            i3=cellgridid[ind,3]  
+            b1[ind,1:3]=[gridx[i2]-gridx[i1] gridy[i2]-gridy[i1] gridz[i2]-gridz[i1]]
+            b1[ind,1:3]=b1[ind,1:3]/sqrt(dot(b1[ind,1:3],b1[ind,1:3]))
+            a2=[gridx[i3]-gridx[i1] gridy[i3]-gridy[i1] gridz[i3]-gridz[i1]]'
+            a2=a2/sqrt(dot(a2,a2))
+            b2[ind,1:3]=a2-dot(b1[ind,1:3],a2)/dot(b1[ind,1:3],b1[ind,1:3])*b1[ind,1:3]
+            b2[ind,1:3]=b2[ind,1:3]/sqrt(dot(b2[ind,1:3],b2[ind,1:3]))
+            b3[ind,1:3]=cross(b1[ind,1:3],b2[ind,1:3])
 
             # Then the reference vector is formulated in the intermediate orthonormal basis 
-            Tmat=[b1[ind,1] b2[ind,1] b3[ind,1]; b1[ind,2] b2[ind,2] b3[ind,2]; b1[ind,3] b2[ind,3] b3[ind,3]];
-            xvec=celldirection[ind,:];
-            bvec=Tmat\xvec;
-            r1=[bvec[1] bvec[2] bvec[3]]';  #ref dir in local CS
+            Tmat=[b1[ind,1] b2[ind,1] b3[ind,1]; b1[ind,2] b2[ind,2] b3[ind,2]; b1[ind,3] b2[ind,3] b3[ind,3]]
+            xvec=celldirection[ind,:]
+            bvec=Tmat\xvec
+            r1=[bvec[1] bvec[2] bvec[3]]' #ref dir in local CS
 
             # In order to get the local coordinate system the basis {b1, b2, b3} is rotated by angle theta about the b3-axis.
             # Calculate the angle by which b1 must be rotated about the b3-axis to match r1 via relation rotation matrix Rz(theta)*[1;0;0]=r1, i.e. cos(theta)=r1(1) and sin(theta)=r1(2);
-            theta[ind]=atan(r1[2],r1[1]);
+            theta[ind]=atan(r1[2],r1[1])
             #Rotation of theta about nvec=b3 to get c1 and c2 
-            nvec=b3[ind,:];
-            xvec=b1[ind,:];
-            c1=nvec*dot(nvec,xvec)+cos(theta[ind])*cross(cross(nvec,xvec),nvec)+sin(theta[ind])*cross(nvec,xvec);
-            xvec=b2[ind,:];
-            c2=nvec*dot(nvec,xvec)+cos(theta[ind])*cross(cross(nvec,xvec),nvec)+sin(theta[ind])*cross(nvec,xvec);
-            xvec=b3[ind,:];
-            c3=nvec*dot(nvec,xvec)+cos(theta[ind])*cross(cross(nvec,xvec),nvec)+sin(theta[ind])*cross(nvec,xvec);
-            b1[ind,:]=c1;
-            b2[ind,:]=c2;
-            b3[ind,:]=c3;  
+            nvec=b3[ind,:]
+            xvec=b1[ind,:]
+            c1=nvec*dot(nvec,xvec)+cos(theta[ind])*cross(cross(nvec,xvec),nvec)+sin(theta[ind])*cross(nvec,xvec)
+            xvec=b2[ind,:]
+            c2=nvec*dot(nvec,xvec)+cos(theta[ind])*cross(cross(nvec,xvec),nvec)+sin(theta[ind])*cross(nvec,xvec)
+            xvec=b3[ind,:]
+            c3=nvec*dot(nvec,xvec)+cos(theta[ind])*cross(cross(nvec,xvec),nvec)+sin(theta[ind])*cross(nvec,xvec)
+            b1[ind,:]=c1
+            b2[ind,:]=c2
+            b3[ind,:]=c3 
         
             #transformation of vertices into local CS
-            gridxlocal[ind,1]=gridx[i1]-cellcenterx[ind];
-            gridylocal[ind,1]=gridy[i1]-cellcentery[ind];
-            gridzlocal[ind,1]=gridz[i1]-cellcenterz[ind];
-            gridxlocal[ind,2]=gridx[i2]-cellcenterx[ind];
-            gridylocal[ind,2]=gridy[i2]-cellcentery[ind];
-            gridzlocal[ind,2]=gridz[i2]-cellcenterz[ind];
-            gridxlocal[ind,3]=gridx[i3]-cellcenterx[ind];
-            gridylocal[ind,3]=gridy[i3]-cellcentery[ind];
-            gridzlocal[ind,3]=gridz[i3]-cellcenterz[ind];
-            Tmat=[b1[ind,1] b2[ind,1] b3[ind,1]; b1[ind,2] b2[ind,2] b3[ind,2]; b1[ind,3] b2[ind,3] b3[ind,3]];
-            xvec=[gridxlocal[ind,1] gridylocal[ind,1] gridzlocal[ind,1]]'; 
-            bvec=Tmat\xvec;
-            gridxlocal[ind,1]=bvec[1];gridylocal[ind,1]=bvec[2];gridzlocal[ind,1]=bvec[3];
-            xvec=[gridxlocal[ind,2] gridylocal[ind,2] gridzlocal[ind,2]]'; 
-            bvec=Tmat\xvec;
-            gridxlocal[ind,2]=bvec[1];gridylocal[ind,2]=bvec[2];gridzlocal[ind,2]=bvec[3];
-            xvec=[gridxlocal[ind,3] gridylocal[ind,3] gridzlocal[ind,3]]'; 
-            bvec=Tmat\xvec;
-            gridxlocal[ind,3]=bvec[1];gridylocal[ind,3]=bvec[2];gridzlocal[ind,3]=bvec[3];
+            gridxlocal[ind,1]=gridx[i1]-cellcenterx[ind]
+            gridylocal[ind,1]=gridy[i1]-cellcentery[ind]
+            gridzlocal[ind,1]=gridz[i1]-cellcenterz[ind]
+            gridxlocal[ind,2]=gridx[i2]-cellcenterx[ind]
+            gridylocal[ind,2]=gridy[i2]-cellcentery[ind]
+            gridzlocal[ind,2]=gridz[i2]-cellcenterz[ind]
+            gridxlocal[ind,3]=gridx[i3]-cellcenterx[ind]
+            gridylocal[ind,3]=gridy[i3]-cellcentery[ind]
+            gridzlocal[ind,3]=gridz[i3]-cellcenterz[ind]
+            Tmat=[b1[ind,1] b2[ind,1] b3[ind,1]; b1[ind,2] b2[ind,2] b3[ind,2]; b1[ind,3] b2[ind,3] b3[ind,3]]
+            xvec=[gridxlocal[ind,1] gridylocal[ind,1] gridzlocal[ind,1]]'
+            bvec=Tmat\xvec
+            gridxlocal[ind,1]=bvec[1];gridylocal[ind,1]=bvec[2];gridzlocal[ind,1]=bvec[3]
+            xvec=[gridxlocal[ind,2] gridylocal[ind,2] gridzlocal[ind,2]]'
+            bvec=Tmat\xvec
+            gridxlocal[ind,2]=bvec[1];gridylocal[ind,2]=bvec[2];gridzlocal[ind,2]=bvec[3]
+            xvec=[gridxlocal[ind,3] gridylocal[ind,3] gridzlocal[ind,3]]'
+            bvec=Tmat\xvec
+            gridxlocal[ind,3]=bvec[1];gridylocal[ind,3]=bvec[2];gridzlocal[ind,3]=bvec[3]
         end
 
-        cellids=[Int64(-9) Int64(-9)];
-        gridids=[Int64(-9) Int64(-9)];
-        x=[Float64(-9.0), Float64(-9.0), Float64(-9.0)];
-        x0=[Float64(-9.0), Float64(-9.0), Float64(-9.0)];
-        r0=[Float64(-9.0), Float64(-9.0), Float64(-9.0)];
-        gridxlocal_neighbour=[Float64(-9.0), Float64(-9.0), Float64(-9.0)];
-        gridylocal_neighbour=[Float64(-9.0), Float64(-9.0), Float64(-9.0)];
-        gridzlocal_neighbour=[Float64(-9.0), Float64(-9.0), Float64(-9.0)];
-        f1=[Float64(-9.0), Float64(-9.0), Float64(-9.0)];
-        f2=[Float64(-9.0), Float64(-9.0), Float64(-9.0)];
-        f3=[Float64(-9.0), Float64(-9.0), Float64(-9.0)];
+        cellids=[Int64(-9) Int64(-9)]
+        gridids=[Int64(-9) Int64(-9)]
+        x=[-9.0, -9.0, -9.0]
+        x0=[-9.0, -9.0, -9.0]
+        r0=[-9.0, -9.0, -9.0]
+        gridxlocal_neighbour=[-9.0, -9.0, -9.0]
+        gridylocal_neighbour=[-9.0, -9.0, -9.0]
+        gridzlocal_neighbour=[-9.0, -9.0, -9.0]
+        f1=[-9.0, -9.0, -9.0]
+        f2=[-9.0, -9.0, -9.0]
+        f3=[-9.0, -9.0, -9.0]
         # In a next step the flattened geometry is created, i.e. the cell center and
         # the non-common node of the neighbouring cell is rotated about
         # the common edge to lie in the plane of the considered cell with ID ind
-        for ind in 1:N;
-            cellneighboursline=cellneighboursarray[ind,:];
+        for ind in 1:N
+            cellneighboursline=cellneighboursarray[ind,:]
             cellneighboursline=cellneighboursline[cellneighboursline .> 0]
-            for i_neighbour in 1:length(cellneighboursline);
+            for i_neighbour in 1:length(cellneighboursline)
                 # Find first the cell center of neighbouring cell in local coordinate system of cell ind
                 # 1) projection of cell center P=(0,0) onto straigth line through
                 #    i1 and i2 to get point Q1 and calculation of length l1 of line
@@ -1720,154 +1720,171 @@ module rtmsim
                 #face in between; face direction is from smaller to larger index
                 #x0..local coordinates of smaller index
                 #r0..vector from smaller to larger index in LCS
-                inds1=findall(isequal(ind),faces[:,3]);
-                inds2=findall(isequal(cellneighboursline[i_neighbour]),faces[:,3]);
-                mat1=faces[inds1,:];
-                mat2=faces[inds2,:];
-                mat3=vcat(mat1,mat2); 
-                mat4=sortslices(mat3,dims=1);
-                for irow in 1:size(mat4,1)-1;
-                    if mat4[irow,1]==mat4[irow+1,1] && mat4[irow,2]==mat4[irow+1,2];
+                inds1=findall(isequal(ind),faces[:,3])
+                inds2=findall(isequal(cellneighboursline[i_neighbour]),faces[:,3])
+                mat1=faces[inds1,:]
+                mat2=faces[inds2,:]
+                mat3=vcat(mat1,mat2)
+                mat4=sortslices(mat3,dims=1)
+                for irow in 1:size(mat4,1)-1
+                    if mat4[irow,1]==mat4[irow+1,1] && mat4[irow,2]==mat4[irow+1,2]
                         if mat4[irow,3]==ind
-                            cellids=[ind mat4[irow+1,3]];
+                            cellids=[ind mat4[irow+1,3]]
                         else
-                            cellids=[ind mat4[irow,3]];
+                            cellids=[ind mat4[irow,3]]
                         end
-                        gridids=[mat4[irow,1] mat4[irow,2]];
+                        gridids=[mat4[irow,1] mat4[irow,2]]
                     end
                 end
-                inds=[cellgridid[ind,1], cellgridid[ind,2], cellgridid[ind,3]];
-                ia=findall(isequal(gridids[1]),inds);
-                ib=findall(isequal(gridids[2]),inds);
-                x0=[gridxlocal[ind,ia], gridylocal[ind,ia], gridzlocal[ind,ia]];
-                r0=[gridxlocal[ind,ib]-gridxlocal[ind,ia], gridylocal[ind,ib]-gridylocal[ind,ia], gridzlocal[ind,ib]-gridzlocal[ind,ia]];
+                inds=[cellgridid[ind,1], cellgridid[ind,2], cellgridid[ind,3]]
+                ia=findall(isequal(gridids[1]),inds)
+                ib=findall(isequal(gridids[2]),inds)
+                x0=[gridxlocal[ind,ia], gridylocal[ind,ia], gridzlocal[ind,ia]]
+                r0=[gridxlocal[ind,ib]-gridxlocal[ind,ia], gridylocal[ind,ib]-gridylocal[ind,ia], gridzlocal[ind,ib]-gridzlocal[ind,ia]]
 
                 #Define xvec as the vector between cell centers ind and neighbouring cell center (A) (in GCS) 
                 #and transform xvec into local coordinates bvec, this gives A in LCS.
                 #Find normal distance from A in LCS to the cell boundary with that cell center A in flat geometry and 
                 #face normal vector can be defined.
-                x=[[0.0], [0.0], [0.0]];  #P at origin of local CS
-                Px=x[1];
-                Py=x[2];
-                Pz=x[3];
-                lambda=dot(x-x0,r0)/dot(r0,r0);  
-                Q1x=x0[1]+lambda*r0[1];
-                Q1y=x0[2]+lambda*r0[2];
-                Q1z=x0[3]+lambda*r0[3];
-                vec1=[Px-Q1x, Py-Q1y, Pz-Q1z];
-                l1=sqrt(dot(vec1,vec1)); 
-                nvec=[(Q1x-Px), (Q1y-Py), (Q1z-Pz)];
-                nvec=nvec/sqrt(dot(nvec,nvec));
-                cellfacenormalx[ind,i_neighbour]=only(nvec[1]);
-                cellfacenormaly[ind,i_neighbour]=only(nvec[2]); 
+                x=[[0.0], [0.0], [0.0]]  #P at origin of local CS
+                Px=x[1]
+                Py=x[2]
+                Pz=x[3]
+                lambda=dot(x-x0,r0)/dot(r0,r0)  
+                Q1x=x0[1]+lambda*r0[1]
+                Q1y=x0[2]+lambda*r0[2]
+                Q1z=x0[3]+lambda*r0[3]
+                vec1=[Px-Q1x, Py-Q1y, Pz-Q1z]
+                l1=sqrt(dot(vec1,vec1))
+                nvec=[(Q1x-Px), (Q1y-Py), (Q1z-Pz)]
+                nvec=nvec/sqrt(dot(nvec,nvec))
+                cellfacenormalx[ind,i_neighbour]=only(nvec[1])
+                cellfacenormaly[ind,i_neighbour]=only(nvec[2])
 
-                Tmat=[b1[ind,1] b2[ind,1] b3[ind,1]; b1[ind,2] b2[ind,2] b3[ind,2]; b1[ind,3] b2[ind,3] b3[ind,3]];
-                xvec=[cellcenterx[cellneighboursarray[ind,i_neighbour]]-cellcenterx[ind], cellcentery[cellneighboursarray[ind,i_neighbour]]-cellcentery[ind], cellcenterz[cellneighboursarray[ind,i_neighbour]]-cellcenterz[ind] ];  #A in global CS
-                bvec=Tmat\xvec;
-                x=[[bvec[1]], [bvec[2]], [bvec[3]]]; #A in local CS
-                Ax=x[1];
-                Ay=x[2];
-                Az=x[3];
-                lambda=dot(x-x0,r0)/dot(r0,r0);
-                Q2x=x0[1]+lambda*r0[1];
-                Q2y=x0[2]+lambda*r0[2];
-                Q2z=x0[3]+lambda*r0[3];
-                vec2=[Ax-Q2x, Ay-Q2y, Az-Q2z];
-                l2=sqrt(dot(vec2,vec2));
-                cellcentertocellcenterx[ind,i_neighbour]=only(Px+(Q1x-Px)+(Q2x-Q1x)+l2/l1*(Q1x-Px));
-                cellcentertocellcentery[ind,i_neighbour]=only(Py+(Q1y-Py)+(Q2y-Q1y)+l2/l1*(Q1y-Py));
+                Tmat=[b1[ind,1] b2[ind,1] b3[ind,1]; b1[ind,2] b2[ind,2] b3[ind,2]; b1[ind,3] b2[ind,3] b3[ind,3]]
+                xvec=[cellcenterx[cellneighboursarray[ind,i_neighbour]]-cellcenterx[ind], cellcentery[cellneighboursarray[ind,i_neighbour]]-cellcentery[ind], cellcenterz[cellneighboursarray[ind,i_neighbour]]-cellcenterz[ind] ]  #A in global CS
+                bvec=Tmat\xvec
+                x=[[bvec[1]], [bvec[2]], [bvec[3]]] #A in local CS
+                Ax=x[1]
+                Ay=x[2]
+                Az=x[3]
+                lambda=dot(x-x0,r0)/dot(r0,r0)
+                Q2x=x0[1]+lambda*r0[1]
+                Q2y=x0[2]+lambda*r0[2]
+                Q2z=x0[3]+lambda*r0[3]
+                vec2=[Ax-Q2x, Ay-Q2y, Az-Q2z]
+                l2=sqrt(dot(vec2,vec2))
+                cellcentertocellcenterx[ind,i_neighbour]=only(Px+(Q1x-Px)+(Q2x-Q1x)+l2/l1*(Q1x-Px))
+                cellcentertocellcentery[ind,i_neighbour]=only(Py+(Q1y-Py)+(Q2y-Q1y)+l2/l1*(Q1y-Py))
 
-                vec3=[gridxlocal[ind,ib]-gridxlocal[ind,ia], gridylocal[ind,ib]-gridylocal[ind,ia], gridzlocal[ind,ib]-gridzlocal[ind,ia]];
-                cellfacearea[ind,i_neighbour]=0.5*(cellthickness[cellids[1]]+cellthickness[cellids[2]])*sqrt(dot(vec3,vec3));
+                vec3=[gridxlocal[ind,ib]-gridxlocal[ind,ia], gridylocal[ind,ib]-gridylocal[ind,ia], gridzlocal[ind,ib]-gridzlocal[ind,ia]]
+                cellfacearea[ind,i_neighbour]=0.5*(cellthickness[cellids[1]]+cellthickness[cellids[2]])*sqrt(dot(vec3,vec3))
 
                 #Transformation matrix for (u,v) of neighbouring cells to local coordinate system.
                 #Find the two common grid points and the third non-common grid point               
-                ind21=-9;  #Issues with setdiff, therefore manual implementation  #setdiff(cellgridid[cellids[2],:],gridids)
+                ind21=-9  #Issues with setdiff, therefore manual implementation  #setdiff(cellgridid[cellids[2],:],gridids)
                 for ind_tmp in 1:3
                     if cellgridid[cellids[2],ind_tmp]!=gridids[1] && cellgridid[cellids[2],ind_tmp]!=gridids[2]
-                        ind21=cellgridid[cellids[2],ind_tmp];
+                        ind21=cellgridid[cellids[2],ind_tmp]
                     end
                 end     
-                thirdgrid=only(findall(isequal(ind21),cellgridid[cellids[2],:]));
-                common1grid=only(findall(isequal(gridids[1]),cellgridid[cellids[2],:]));
-                common2grid=only(findall(isequal(gridids[2]),cellgridid[cellids[2],:]));   
+                thirdgrid=only(findall(isequal(ind21),cellgridid[cellids[2],:]))
+                common1grid=only(findall(isequal(gridids[1]),cellgridid[cellids[2],:]))
+                common2grid=only(findall(isequal(gridids[2]),cellgridid[cellids[2],:]))  
                 #construction of the third one in outside normal direction for the flat geometry
                 #based on the length of the two non-common edges
-                gridxlocal_neighbour[2]=only(gridxlocal[ind,ia]);  #gridxlocal(ind,common1grid);
-                gridxlocal_neighbour[3]=only(gridxlocal[ind,ib]);  #gridxlocal(ind,common2grid);
-                gridylocal_neighbour[2]=only(gridylocal[ind,ia]);  #gridylocal(ind,common1grid);
-                gridylocal_neighbour[3]=only(gridylocal[ind,ib]);  #gridylocal(ind,common2grid);
-                gridzlocal_neighbour[2]=0.0;
-                gridzlocal_neighbour[3]=0.0;
+                gridxlocal_neighbour[2]=only(gridxlocal[ind,ia])  #gridxlocal(ind,common1grid);
+                gridxlocal_neighbour[3]=only(gridxlocal[ind,ib])  #gridxlocal(ind,common2grid);
+                gridylocal_neighbour[2]=only(gridylocal[ind,ia])  #gridylocal(ind,common1grid);
+                gridylocal_neighbour[3]=only(gridylocal[ind,ib])  #gridylocal(ind,common2grid);
+                gridzlocal_neighbour[2]=0.0
+                gridzlocal_neighbour[3]=0.0
                 
-                ind3=-9;
+                ind3=-9
                 for ind_tmp in 1:3
                     if cellgridid[cellids[2],ind_tmp]!=cellgridid[ind,1] && cellgridid[cellids[2],ind_tmp]!=cellgridid[ind,2] && cellgridid[cellids[2],ind_tmp]!=cellgridid[ind,3]
-                        ind3=cellgridid[cellids[2],ind_tmp];
+                        ind3=cellgridid[cellids[2],ind_tmp]
                     end
                 end
-                Tmat=[b1[ind,1] b2[ind,1] b3[ind,1]; b1[ind,2] b2[ind,2] b3[ind,2]; b1[ind,3] b2[ind,3] b3[ind,3]];
-                xvec=[gridx[ind3]-cellcenterx[ind], gridy[ind3]-cellcentery[ind], gridz[ind3]-cellcenterz[ind]]; #A in global CS
-                bvec=Tmat\xvec;
-                x=[[bvec[1]], [bvec[2]], [bvec[3]]]; #A in local CS
-                Ax=x[1];
-                Ay=x[2];
-                Az=x[3];
-                lambda=dot(x-x0,r0)/dot(r0,r0);
-                Q2x=x0[1]+lambda*r0[1];
-                Q2y=x0[2]+lambda*r0[2];
-                Q2z=x0[3]+lambda*r0[3];
-                vec2=[Ax-Q2x, Ay-Q2y, Az-Q2z];
-                l2=sqrt(dot(vec2,vec2));
-                gridxlocal_neighbour[1]=only(Px+(Q1x-Px)+(Q2x-Q1x)+l2/l1*(Q1x-Px));
-                gridylocal_neighbour[1]=only(Py+(Q1y-Py)+(Q2y-Q1y)+l2/l1*(Q1y-Py));
-                gridzlocal_neighbour[1]=Float64(0);
+                Tmat=[b1[ind,1] b2[ind,1] b3[ind,1]; b1[ind,2] b2[ind,2] b3[ind,2]; b1[ind,3] b2[ind,3] b3[ind,3]]
+                xvec=[gridx[ind3]-cellcenterx[ind], gridy[ind3]-cellcentery[ind], gridz[ind3]-cellcenterz[ind]] #A in global CS
+                bvec=Tmat\xvec
+                x=[[bvec[1]], [bvec[2]], [bvec[3]]] #A in local CS
+                Ax=x[1]
+                Ay=x[2]
+                Az=x[3]
+                lambda=dot(x-x0,r0)/dot(r0,r0)
+                Q2x=x0[1]+lambda*r0[1]
+                Q2y=x0[2]+lambda*r0[2]
+                Q2z=x0[3]+lambda*r0[3]
+                vec2=[Ax-Q2x, Ay-Q2y, Az-Q2z]
+                l2=sqrt(dot(vec2,vec2))
+                gridxlocal_neighbour[1]=only(Px+(Q1x-Px)+(Q2x-Q1x)+l2/l1*(Q1x-Px))
+                gridylocal_neighbour[1]=only(Py+(Q1y-Py)+(Q2y-Q1y)+l2/l1*(Q1y-Py))
+                gridzlocal_neighbour[1]=0.0
 
                 #Construction of LCS f1,f2,f3 according to procedure from above using the points gridxlocal_neighbour(j),gridylocal_neighbour(j)
-                ivec1=[only(cellgridid[cellids[2],1]), only(cellgridid[cellids[2],2]), only(cellgridid[cellids[2],3])];                           
-                min_val=min(ivec1[1],ivec1[2],ivec1[3]); 
-                max_val=max(ivec1[1],ivec1[2],ivec1[3]); 
-                idel1=findall(isequal(min(ivec1[1],ivec1[2],ivec1[3])),ivec1);deleteat!(ivec1,idel1);idel1=findall(isequal(max(ivec1[1],ivec1[2])),ivec1);deleteat!(ivec1,idel1);
-                median_val=ivec1[1];
-                if ind3==min_val; k1=1; elseif ind3==median_val; k2=1; elseif ind3==max_val; k3=1; end                
-                ind4=cellgridid[cellids[2],common1grid];
-                if ind4==min_val; k1=2; elseif ind4==median_val; k2=2; elseif ind4==max_val; k3=2; end             
-                ind5=cellgridid[cellids[2],common2grid];
-                if ind5==min_val; k1=3; elseif ind5==median_val; k2=3; elseif ind5==max_val; k3=3; end
+                ivec1=[only(cellgridid[cellids[2],1]), only(cellgridid[cellids[2],2]), only(cellgridid[cellids[2],3])]                         
+                min_val=min(ivec1[1],ivec1[2],ivec1[3])
+                max_val=max(ivec1[1],ivec1[2],ivec1[3]) 
+                idel1=findall(isequal(min(ivec1[1],ivec1[2],ivec1[3])),ivec1);deleteat!(ivec1,idel1);idel1=findall(isequal(max(ivec1[1],ivec1[2])),ivec1);deleteat!(ivec1,idel1)
+                median_val=ivec1[1]
+                if ind3==min_val 
+                    k1=1 
+                elseif ind3==median_val 
+                    k2=1 
+                elseif ind3==max_val 
+                    k3=1 
+                end                
+                ind4=cellgridid[cellids[2],common1grid]
+                if ind4==min_val 
+                    k1=2 
+                elseif ind4==median_val 
+                    k2=2 
+                elseif ind4==max_val 
+                    k3=2
+                end             
+                ind5=cellgridid[cellids[2],common2grid]
+                if ind5==min_val
+                    k1=3
+                elseif ind5==median_val 
+                    k2=3 
+                elseif ind5==max_val
+                    k3=3
+                end
+                f1=[gridxlocal_neighbour[k2]-gridxlocal_neighbour[k1], gridylocal_neighbour[k2]-gridylocal_neighbour[k1], gridzlocal_neighbour[k2]-gridzlocal_neighbour[k1]]
+                f1=f1/sqrt(dot(f1,f1))
+                a2=[gridxlocal_neighbour[k3]-gridxlocal_neighbour[k1], gridylocal_neighbour[k3]-gridylocal_neighbour[k1], gridzlocal_neighbour[k3]-gridzlocal_neighbour[k1]]
+                a2=a2/sqrt(dot(a2,a2))
+                f2=a2-dot(f1,a2)/dot(f1,f1)*f1
+                f2=f2/sqrt(dot(f2,f2))
+                f3=cross(f1,f2)   
         
-                f1=[gridxlocal_neighbour[k2]-gridxlocal_neighbour[k1], gridylocal_neighbour[k2]-gridylocal_neighbour[k1], gridzlocal_neighbour[k2]-gridzlocal_neighbour[k1]];
-                f1=f1/sqrt(dot(f1,f1));
-                a2=[gridxlocal_neighbour[k3]-gridxlocal_neighbour[k1], gridylocal_neighbour[k3]-gridylocal_neighbour[k1], gridzlocal_neighbour[k3]-gridzlocal_neighbour[k1]];
-                a2=a2/sqrt(dot(a2,a2));
-                f2=a2-dot(f1,a2)/dot(f1,f1)*f1;
-                f2=f2/sqrt(dot(f2,f2));
-                f3=cross(f1,f2);    
-        
-                nvec=f3;
-                xvec=f1;
-                c1=nvec*dot(nvec,xvec)+cos(theta[cellneighboursarray[ind,i_neighbour]])*cross(cross(nvec,xvec),nvec)+sin(theta[cellneighboursarray[ind,i_neighbour]] )*cross(nvec,xvec);
-                xvec=f2;
-                c2=nvec*dot(nvec,xvec)+cos(theta[cellneighboursarray[ind,i_neighbour]])*cross(cross(nvec,xvec),nvec)+sin(theta[cellneighboursarray[ind,i_neighbour]] )*cross(nvec,xvec);
-                xvec=f3;
-                c3=nvec*dot(nvec,xvec)+cos(theta[cellneighboursarray[ind,i_neighbour]])*cross(cross(nvec,xvec),nvec)+sin(theta[cellneighboursarray[ind,i_neighbour]] )*cross(nvec,xvec);
-                f1=c1;
-                f2=c2;
-                f3=c3;
-                Tmat=[f1[1] f2[1] f3[1]; f1[2] f2[2] f3[2]; f1[3] f2[3] f3[3]];
+                nvec=f3
+                xvec=f1
+                c1=nvec*dot(nvec,xvec)+cos(theta[cellneighboursarray[ind,i_neighbour]])*cross(cross(nvec,xvec),nvec)+sin(theta[cellneighboursarray[ind,i_neighbour]] )*cross(nvec,xvec)
+                xvec=f2
+                c2=nvec*dot(nvec,xvec)+cos(theta[cellneighboursarray[ind,i_neighbour]])*cross(cross(nvec,xvec),nvec)+sin(theta[cellneighboursarray[ind,i_neighbour]] )*cross(nvec,xvec)
+                xvec=f3
+                c3=nvec*dot(nvec,xvec)+cos(theta[cellneighboursarray[ind,i_neighbour]])*cross(cross(nvec,xvec),nvec)+sin(theta[cellneighboursarray[ind,i_neighbour]] )*cross(nvec,xvec)
+                f1=c1
+                f2=c2
+                f3=c3
+                Tmat=[f1[1] f2[1] f3[1]; f1[2] f2[2] f3[2]; f1[3] f2[3] f3[3]]
 
                 #Assign transformation matrix for the velocities in the local coordinate systems
                 #(u,v)_e=T*(u,v)_f
-                T11[ind,i_neighbour]=Tmat[1,1];
-                T12[ind,i_neighbour]=Tmat[1,2];
-                T21[ind,i_neighbour]=Tmat[2,1];
-                T22[ind,i_neighbour]=Tmat[2,2];
+                T11[ind,i_neighbour]=Tmat[1,1]
+                T12[ind,i_neighbour]=Tmat[1,2]
+                T21[ind,i_neighbour]=Tmat[2,1]
+                T22[ind,i_neighbour]=Tmat[2,2]
             end
 
             #calculate cell volume
-            vec1=[gridxlocal[ind,2]-gridxlocal[ind,1], gridylocal[ind,2]-gridylocal[ind,1], gridzlocal[ind,2]-gridzlocal[ind,1]];
-            vec2=[gridxlocal[ind,3]-gridxlocal[ind,1], gridylocal[ind,3]-gridylocal[ind,1], gridzlocal[ind,3]-gridzlocal[ind,1]];
-            vec3=cross(vec1,vec2);
-            cellvolume[ind]=cellthickness[ind]*0.5*sqrt(dot(vec3,vec3));
+            vec1=[gridxlocal[ind,2]-gridxlocal[ind,1], gridylocal[ind,2]-gridylocal[ind,1], gridzlocal[ind,2]-gridzlocal[ind,1]]
+            vec2=[gridxlocal[ind,3]-gridxlocal[ind,1], gridylocal[ind,3]-gridylocal[ind,1], gridzlocal[ind,3]-gridzlocal[ind,1]]
+            vec3=cross(vec1,vec2)
+            cellvolume[ind]=cellthickness[ind]*0.5*sqrt(dot(vec3,vec3))
         end  
 
         return cellvolume, cellcentertocellcenterx, cellcentertocellcentery, T11, T12, T21, T22, cellfacenormalx, cellfacenormaly, cellfacearea
@@ -2522,170 +2539,170 @@ module rtmsim
     - `rtmsim.plot_filling(-1,-1)` 
     """
     function plot_filling(n_out,n_pics)
-        val=0;
-		n_out_start=-1;
-        if n_out==-1;
-            vec1=glob("output_*.jld2");
-            for i=1:length(vec1);
+        val=0
+		n_out_start=-1
+        if n_out==-1
+            vec1=glob("output_*.jld2")
+            for i=1:length(vec1)
                 vec2=split(vec1[i],".")
                 vec3=split(vec2[1],"_")
                 val=max(val,parse(Int64,vec3[2]))
-				if i==1;
-				    n_out_start=parse(Int64,vec3[2]);
+				if i==1
+				    n_out_start=parse(Int64,vec3[2])
 				end
             end            
-            n_out=val;
+            n_out=val
         end
-		if n_pics==-1;
-		    n_pics=(n_out-n_out_start);
+		if n_pics==-1
+		    n_pics=(n_out-n_out_start)
 		end
         #plot the last n_pics pictures
-        if n_pics<4;
-            errorstring=string("Makes no sense for n_pics<4"* "\n"); 
-            error(errorstring);
+        if n_pics<4
+            errorstring="Makes no sense for n_pics<4 \n"
+            error(errorstring)
         end
-        t_digits=2; 
-        t_div=10^2;
+        t_digits=2 
+        t_div=10^2
         
-        time_vector=[];
-        output_array=[];
-        inds=[];
-        inds0=[];
-        inds1=[];
-        N=Int64(0);
-        N0=Int64(0);
-        N1=Int64(0);
-        ax=Float64(0.0);
-        ay=Float64(0.0);
-        az=Float64(0.0);
-        t=Float64(0);
-        xyz=Vector{Float64};
-        xyz1=Vector{Float64};
-        X=Vector{Float64};
-        Y=Vector{Float64};
-        Z=Vector{Float64};
-        C=Vector{Float64};
-        X1=Vector{Float64};
-        Y1=Vector{Float64};
-        Z1=Vector{Float64};
-        C1_gamma=Vector{Float64};        
-        i_out=n_out-n_pics;
-        i_firstfile=1;
-        for i_plot in 1:n_pics+1;          
-            outputfilename=string("output_",string(i_out),".jld2");
-            if ~isfile(outputfilename);
-                errorstring=string("File ",outputfilename," not existing"* "\n"); 
-                error(errorstring);
+        time_vector=[]
+        output_array=[]
+        inds=[]
+        inds0=[]
+        inds1=[]
+        N=Int64(0)
+        N0=Int64(0)
+        N1=Int64(0)
+        ax=0.0
+        ay=0.0
+        az=0.0
+        t=0.0
+        xyz=Vector{Float64}
+        xyz1=Vector{Float64}
+        X=Vector{Float64}
+        Y=Vector{Float64}
+        Z=Vector{Float64}
+        C=Vector{Float64}
+        X1=Vector{Float64}
+        Y1=Vector{Float64}
+        Z1=Vector{Float64}
+        C1_gamma=Vector{Float64}      
+        i_out=n_out-n_pics
+        i_firstfile=1
+        for i_plot in 1:n_pics+1         
+            outputfilename="output_$(i_out).jld2"
+            if ~isfile(outputfilename)
+                errorstring="File $(outputfilename) not existing \n" 
+                error(errorstring)
             else
                 loadfilename="results_temp.jld2"
-                cp(outputfilename,loadfilename;force=true);
+                cp(outputfilename,loadfilename;force=true)
                 @load loadfilename t rho_new u_new v_new p_new gamma_new gamma_out gridx gridy gridz cellgridid N n_out
                 #print(string(i_plot)*" \n")
                 #print(string(i_out)*" \n")
-                if i_firstfile==1;
-                    i_firstfile=0;
+                if i_firstfile==1
+                    i_firstfile=0
                     #for poly plot
-                    inds0=findall(gamma_out.>-0.5);
-                    N0=length(inds0);
-                    X=Array{Float64}(undef, 3, N0);
-                    Y=Array{Float64}(undef, 3, N0);
-                    Z=Array{Float64}(undef, 3, N0);
-                    C_p=Array{Float32}(undef, 3, N0);        
-                    C_gamma=Array{Float32}(undef, 3, N0);
-                    inds1=findall(gamma_out.<-0.5);
-                    N1=length(inds1);
-                    X1=Array{Float64}(undef, 3, N1);
-                    Y1=Array{Float64}(undef, 3, N1);
-                    Z1=Array{Float64}(undef, 3, N1);  
-                    C1_gamma=Array{Float32}(undef, 3, N1);
-                    for i in 1:N0;
-                        ind=inds0[i];
-                        X[1,i]=gridx[cellgridid[ind,1]];
-                        X[2,i]=gridx[cellgridid[ind,2]];
-                        X[3,i]=gridx[cellgridid[ind,3]];
-                        Y[1,i]=gridy[cellgridid[ind,1]];
-                        Y[2,i]=gridy[cellgridid[ind,2]];
-                        Y[3,i]=gridy[cellgridid[ind,3]];
-                        Z[1,i]=gridz[cellgridid[ind,1]];
-                        Z[2,i]=gridz[cellgridid[ind,2]];
-                        Z[3,i]=gridz[cellgridid[ind,3]];
+                    inds0=findall(gamma_out.>-0.5)
+                    N0=length(inds0)
+                    X=Array{Float64}(undef, 3, N0)
+                    Y=Array{Float64}(undef, 3, N0)
+                    Z=Array{Float64}(undef, 3, N0)
+                    C_p=Array{Float32}(undef, 3, N0)        
+                    C_gamma=Array{Float32}(undef, 3, N0)
+                    inds1=findall(gamma_out.<-0.5)
+                    N1=length(inds1)
+                    X1=Array{Float64}(undef, 3, N1)
+                    Y1=Array{Float64}(undef, 3, N1)
+                    Z1=Array{Float64}(undef, 3, N1)  
+                    C1_gamma=Array{Float32}(undef, 3, N1)
+                    for i in 1:N0
+                        ind=inds0[i]
+                        X[1,i]=gridx[cellgridid[ind,1]]
+                        X[2,i]=gridx[cellgridid[ind,2]]
+                        X[3,i]=gridx[cellgridid[ind,3]]
+                        Y[1,i]=gridy[cellgridid[ind,1]]
+                        Y[2,i]=gridy[cellgridid[ind,2]]
+                        Y[3,i]=gridy[cellgridid[ind,3]]
+                        Z[1,i]=gridz[cellgridid[ind,1]]
+                        Z[2,i]=gridz[cellgridid[ind,2]]
+                        Z[3,i]=gridz[cellgridid[ind,3]]
                     end
                     xyz = reshape([X[:] Y[:] Z[:]]', :)
                     for i in 1:N1
-                        ind=inds1[i];
-                        X1[1,i]=gridx[cellgridid[ind,1]];
-                        X1[2,i]=gridx[cellgridid[ind,2]];
-                        X1[3,i]=gridx[cellgridid[ind,3]];
-                        Y1[1,i]=gridy[cellgridid[ind,1]];
-                        Y1[2,i]=gridy[cellgridid[ind,2]];
-                        Y1[3,i]=gridy[cellgridid[ind,3]];
-                        Z1[1,i]=gridz[cellgridid[ind,1]];
-                        Z1[2,i]=gridz[cellgridid[ind,2]];
-                        Z1[3,i]=gridz[cellgridid[ind,3]];
-                        C1_gamma[1,i]=0.5;
-                        C1_gamma[2,i]=0.5;
-                        C1_gamma[3,i]=0.5;
+                        ind=inds1[i]
+                        X1[1,i]=gridx[cellgridid[ind,1]]
+                        X1[2,i]=gridx[cellgridid[ind,2]]
+                        X1[3,i]=gridx[cellgridid[ind,3]]
+                        Y1[1,i]=gridy[cellgridid[ind,1]]
+                        Y1[2,i]=gridy[cellgridid[ind,2]]
+                        Y1[3,i]=gridy[cellgridid[ind,3]]
+                        Z1[1,i]=gridz[cellgridid[ind,1]]
+                        Z1[2,i]=gridz[cellgridid[ind,2]]
+                        Z1[3,i]=gridz[cellgridid[ind,3]]
+                        C1_gamma[1,i]=0.5
+                        C1_gamma[2,i]=0.5
+                        C1_gamma[3,i]=0.5
                     end
                     xyz1 = reshape([X1[:] Y1[:] Z1[:]]', :)
 
                     #bounding box
-                    deltax=maximum(gridx)-minimum(gridx);
-                    deltay=maximum(gridy)-minimum(gridy);
-                    deltaz=maximum(gridz)-minimum(gridz);
-                    mindelta=min(deltax,deltay,deltaz);
-                    maxdelta=max(deltax,deltay,deltaz);
-                    if mindelta<maxdelta*0.001;
-                        eps_delta=maxdelta*0.001;
+                    deltax=maximum(gridx)-minimum(gridx)
+                    deltay=maximum(gridy)-minimum(gridy)
+                    deltaz=maximum(gridz)-minimum(gridz)
+                    mindelta=min(deltax,deltay,deltaz)
+                    maxdelta=max(deltax,deltay,deltaz)
+                    if mindelta<maxdelta*0.001
+                        eps_delta=maxdelta*0.001
                     else
-                        eps_delta=0;
+                        eps_delta=0
                     end 
-                    ax=(deltax+eps_delta)/(mindelta+eps_delta);
-                    ay=(deltay+eps_delta)/(mindelta+eps_delta);
-                    az=(deltaz+eps_delta)/(mindelta+eps_delta);
-                    time_vector=t;
-                    output_array=gamma_out; 
-                    N_val=N;
+                    ax=(deltax+eps_delta)/(mindelta+eps_delta)
+                    ay=(deltay+eps_delta)/(mindelta+eps_delta)
+                    az=(deltaz+eps_delta)/(mindelta+eps_delta)
+                    time_vector=t
+                    output_array=gamma_out
+                    N_val=N
 
                 else
-                    time_vector=vcat(time_vector,t);
-                    output_array=hcat(output_array,gamma_out);
+                    time_vector=vcat(time_vector,t)
+                    output_array=hcat(output_array,gamma_out)
                 end
             end
-            i_out=i_out+1;
+            i_out=i_out+1
         end
 
         gamma_plot=output_array[:,end]  
         for ind=1:N;
-            if gamma_plot[ind]>0.8;
-                gamma_plot[ind]=1;
+            if gamma_plot[ind]>0.8
+                gamma_plot[ind]=1
             else
-                gamma_plot[ind]=0;
+                gamma_plot[ind]=0
             end
         end
-        deltagamma=1;  #deltagamma=maximum(gamma_plot)-minimum(gamma_plot);
+        deltagamma=1  #deltagamma=maximum(gamma_plot)-minimum(gamma_plot);
         
-        C_gamma=Array{Float32}(undef, 3, N0);
-        for i in 1:N0;
-            ind=inds0[i];
-            C_gamma[1,i]=gamma_plot[ind]/deltagamma;
-            C_gamma[2,i]=gamma_plot[ind]/deltagamma;
-            C_gamma[3,i]=gamma_plot[ind]/deltagamma;
+        C_gamma=Array{Float32}(undef, 3, N0)
+        for i in 1:N0
+            ind=inds0[i]
+            C_gamma[1,i]=gamma_plot[ind]/deltagamma
+            C_gamma[2,i]=gamma_plot[ind]/deltagamma
+            C_gamma[3,i]=gamma_plot[ind]/deltagamma
         end
-
-        resolution_val=600;
+        # Why is this not a keyword argument?
+        resolution_val=600
         fig = Figure(resolution=(resolution_val, resolution_val))   
-        ax1 = Axis3(fig[1, 1]; aspect=(ax,ay,az), perspectiveness=0.5,viewmode = :fitzoom,title=string("Filling factor at t=", string(round(t_div*t)/t_div) ,"s"))
+        ax1 = Axis3(fig[1, 1]; aspect=(ax,ay,az), perspectiveness=0.5,viewmode = :fitzoom,title="Filling factor at t=$(round(t_div*t)/t_div) ,$(s)")
         #p1=poly!(ax1,connect(xyz, Makie.Point{3}), connect(1:length(X), TriangleFace); color=C_gamma[:], strokewidth=1, colorrange=(0,1))
         #if N1>0;
         #    p2=poly!(ax1,connect(xyz1, Makie.Point{3}), connect(1:length(X1), TriangleFace); color=C1_gamma[:], strokewidth=1, colorrange=(0,1),colormap = (:bone))
         #end
-        hidedecorations!(ax1);
+        hidedecorations!(ax1)
         hidespines!(ax1) 
         #display(fig)
         #sl_t = Slider(fig[2, 1], range = time_vector[1]:  (time_vector[end]-time_vector[1])/n_pics :time_vector[end], startvalue =  time_vector[end] );
-        sl_t = Slider(fig[2, 1], range = time_vector[1]:  (time_vector[end]-time_vector[1])/n_pics :time_vector[end], startvalue =  time_vector[1] );
+        sl_t = Slider(fig[2, 1], range = time_vector[1]:  (time_vector[end]-time_vector[1])/n_pics :time_vector[end], startvalue =  time_vector[1] )
         point = lift(sl_t.value) do x           
-            if x<0.5*(time_vector[end]+time_vector[1]);
+            if x<0.5*(time_vector[end]+time_vector[1])
                 gamma_plot=output_array[:,1]
             else
                 gamma_plot=output_array[:,end]
@@ -2694,35 +2711,35 @@ module rtmsim
             tind=1
             tind1=1
             tind2=2
-            for i in 1:length(time_vector)-1;
+            for i in 1:length(time_vector)-1
                 if x>=0.5*(time_vector[i]+time_vector[i+1])
-                    tind=i+1;
+                    tind=i+1
                 end
             end            
             gamma_plot=output_array[:,tind]
             time_val=time_vector[tind]
 
-            for ind=1:N;
-                if gamma_plot[ind]>0.8;
-                    gamma_plot[ind]=1;
+            for ind=1:N
+                if gamma_plot[ind]>0.8
+                    gamma_plot[ind]=1
                 else
-                    gamma_plot[ind]=0;
+                    gamma_plot[ind]=0
                 end
             end
-            deltagamma=1;  #maximum(gamma_plot)-minimum(gamma_plot);
-            for i in 1:N0;
-                ind=inds0[i];
-                C_gamma[1,i]=gamma_plot[ind]/deltagamma;
-                C_gamma[2,i]=gamma_plot[ind]/deltagamma;
-                C_gamma[3,i]=gamma_plot[ind]/deltagamma;
+            deltagamma=1  #maximum(gamma_plot)-minimum(gamma_plot);
+            for i in 1:N0
+                ind=inds0[i]
+                C_gamma[1,i]=gamma_plot[ind]/deltagamma
+                C_gamma[2,i]=gamma_plot[ind]/deltagamma
+                C_gamma[3,i]=gamma_plot[ind]/deltagamma
             end
             empty!(ax1.scene)
             p1=poly!(ax1,connect(xyz, Makie.Point{3}), connect(1:length(X), TriangleFace); color=C_gamma[:], strokewidth=1, colorrange=(0,1))
-            if N1>0;
+            if N1>0
                 p2=poly!(ax1,connect(xyz1, Makie.Point{3}), connect(1:length(X1), TriangleFace); color=C1_gamma[:], strokewidth=1, colorrange=(0,1),colormap = (:bone))
             end
-            ax1.title=string("Filling factor at t=", string(round(t_div*time_val)/t_div) ,"s")
-            hidedecorations!(ax1);
+            ax1.title="Filling factor at t=$(round(t_div*time_val)/t_div) ,$(s)"
+            hidedecorations!(ax1)
             hidespines!(ax1) 
             display(fig)
         end
@@ -2735,12 +2752,12 @@ module rtmsim
     """
     function gui()
         #one Gtk window
-        win = GtkWindow("RTMsim"); 
+        win = GtkWindow("RTMsim")
 
         #define buttons
         sm=GtkButton("Select mesh file");pm=GtkButton("Plot mesh");ps=GtkButton("Plot sets")
         ss=GtkButton("Start simulation");cs=GtkButton("Continue simulation")
-        sel=GtkButton("Select inlet port"); si=GtkButton("Start interactive");ci=GtkButton("Continue interactive");
+        sel=GtkButton("Select inlet port"); si=GtkButton("Start interactive");ci=GtkButton("Continue interactive")
         sr=GtkButton("Select results file");pr=GtkButton("Plot results")
         po=GtkButton("Plot overview")
         pf=GtkButton("Plot filling")
@@ -2752,8 +2769,8 @@ module rtmsim
         #define input fields
         #in2=GtkEntry(); set_gtk_property!(in2,:text,"inputfiles\\input.txt");
         #mf=GtkEntry(); set_gtk_property!(mf,:text,"meshfiles\\mesh_permeameter1_foursets.bdf");
-        in2=GtkEntry(); set_gtk_property!(in2,:text,"");
-        mf=GtkEntry(); set_gtk_property!(mf,:text,"");
+        in2=GtkEntry(); set_gtk_property!(in2,:text,"")
+        mf=GtkEntry(); set_gtk_property!(mf,:text,"")
         t=GtkEntry(); set_gtk_property!(t,:text,"200")
         rf=GtkEntry(); set_gtk_property!(rf,:text,"results.jld2")
         r=GtkEntry(); set_gtk_property!(r,:text,"0.01")
@@ -2802,25 +2819,25 @@ module rtmsim
 
         #define radio buttons
         choices = ["Ignore",  "Pressure inlet", "Pressure outlet", "Patch" ]
-        f1 = Gtk.GtkBox(:v);
+        f1 = Gtk.GtkBox(:v)
         r1 = Vector{RadioButton}(undef, 4)
         r1[1] = RadioButton(choices[1]);                   push!(f1,r1[1])
         r1[2] = RadioButton(r1[1],choices[2],active=true); push!(f1,r1[2])
         r1[3] = RadioButton(r1[2],choices[3]);             push!(f1,r1[3])
         r1[4] = RadioButton(r1[3],choices[4]);             push!(f1,r1[4])
-        f2 = Gtk.GtkBox(:v);
+        f2 = Gtk.GtkBox(:v)
         r2 = Vector{RadioButton}(undef, 4)
         r2[1] = RadioButton(choices[1],active=true); push!(f2,r2[1])
         r2[2] = RadioButton(r2[1],choices[2]);       push!(f2,r2[2])
         r2[3] = RadioButton(r2[2],choices[3]);       push!(f2,r2[3])
         r2[4] = RadioButton(r2[3],choices[4]);       push!(f2,r2[4])
-        f3 = Gtk.GtkBox(:v);
+        f3 = Gtk.GtkBox(:v)
         r3 = Vector{RadioButton}(undef, 4)
         r3[1] = RadioButton(choices[1],active=true); push!(f3,r3[1])
         r3[2] = RadioButton(r3[1],choices[2]);       push!(f3,r3[2])
         r3[3] = RadioButton(r3[2],choices[3]);       push!(f3,r3[3])
         r3[4] = RadioButton(r3[3],choices[4]);       push!(f3,r3[4])
-        f4 = Gtk.GtkBox(:v);
+        f4 = Gtk.GtkBox(:v)
         r4 = Vector{RadioButton}(undef, 4)
         r4[1] = RadioButton(choices[1],active=true); push!(f4,r4[1])
         r4[2] = RadioButton(r4[1],choices[2]);       push!(f4,r4[2])
@@ -2836,39 +2853,39 @@ module rtmsim
         g = GtkGrid()    #Cartesian coordinates, g[column,row]
         set_gtk_property!(g, :column_spacing, 5) 
         set_gtk_property!(g, :row_spacing, 5) 
-        g[1,1]=sm; g[2,1] = mf; g[3,1] = pm;  g[4,1] = ps;  g[7,1] = in1;  g[8,1] = in2;  g[9,1] = in3;              
-                g[2,2] = t;  g[3,2] = ss;  g[4,2] = cs; 
-                g[2,3] = r;  g[3,3] = sel; g[4,3] = si; g[5,3] = ci; 
-        g[1,4] = sr; g[2,4] = rf; g[3,4] = pr; g[4,4] = po;g[5,4] = pf;
-        g[7:10,6:9] = im;
-                                        g[3,11] = f1;   g[4,11] = f2;   g[5,11] = f3;   g[6,11] = f4;
-        g[1,12] = par_1; g[2,12] = p0_1; g[3,12] = p1_1; g[4,12] = p2_1; g[5,12] = p3_1; g[6,12] = p4_1; 
-        g[1,13] = par_2; g[2,13] = p0_2; g[3,13] = p1_2; g[4,13] = p2_2; g[5,13] = p3_2; g[6,13] = p4_2; 
-        g[1,14] = par_3; g[2,14] = p0_3; g[3,14] = p1_3; g[4,14] = p2_3; g[5,14] = p3_3; g[6,14] = p4_3; 
-                        g[2,15] = p0_4; g[3,15] = p1_4; g[4,15] = p2_4; g[5,15] = p3_4; g[6,15] = p4_4; 
-                        g[2,16] = p0_5; g[3,16] = p1_5; g[4,16] = p2_5; g[5,16] = p3_5; g[6,16] = p4_5; 
-                        g[2,17] = p0_6; g[3,17] = p1_6; g[4,17] = p2_6; g[5,17] = p3_6; g[6,17] = p4_6;      #g[9,17] = h; 
-                        g[2,18] = p0_7; g[3,18] = p1_7; g[4,18] = p2_7; g[5,18] = p3_7; g[6,18] = p4_7;      g[9,18] = q; 
+        g[1,1]=sm; g[2,1] = mf; g[3,1] = pm;  g[4,1] = ps;  g[7,1] = in1;  g[8,1] = in2;  g[9,1] = in3         
+                g[2,2] = t;  g[3,2] = ss;  g[4,2] = cs
+                g[2,3] = r;  g[3,3] = sel; g[4,3] = si; g[5,3] = ci 
+        g[1,4] = sr; g[2,4] = rf; g[3,4] = pr; g[4,4] = po;g[5,4] = pf
+        g[7:10,6:9] = im
+                                        g[3,11] = f1;   g[4,11] = f2;   g[5,11] = f3;   g[6,11] = f4
+        g[1,12] = par_1; g[2,12] = p0_1; g[3,12] = p1_1; g[4,12] = p2_1; g[5,12] = p3_1; g[6,12] = p4_1
+        g[1,13] = par_2; g[2,13] = p0_2; g[3,13] = p1_2; g[4,13] = p2_2; g[5,13] = p3_2; g[6,13] = p4_2
+        g[1,14] = par_3; g[2,14] = p0_3; g[3,14] = p1_3; g[4,14] = p2_3; g[5,14] = p3_3; g[6,14] = p4_3
+                        g[2,15] = p0_4; g[3,15] = p1_4; g[4,15] = p2_4; g[5,15] = p3_4; g[6,15] = p4_4
+                        g[2,16] = p0_5; g[3,16] = p1_5; g[4,16] = p2_5; g[5,16] = p3_5; g[6,16] = p4_5
+                        g[2,17] = p0_6; g[3,17] = p1_6; g[4,17] = p2_6; g[5,17] = p3_6; g[6,17] = p4_6     #g[9,17] = h; 
+                        g[2,18] = p0_7; g[3,18] = p1_7; g[4,18] = p2_7; g[5,18] = p3_7; g[6,18] = p4_7;     g[9,18] = q 
         push!(win, g)
 
         #callback functions
         function sm_clicked(w)
             #str = pick_file(pwd(),filterlist="bdf");
             if Sys.iswindows()
-                str = pick_file(pwd(),filterlist="bdf");
+                str = pick_file(pwd(),filterlist="bdf")
             elseif Sys.islinux()
                 str=open_dialog("Pick a file",GtkNullContainer(),("*.bdf",))
             end
-            set_gtk_property!(mf,:text,str);
+            set_gtk_property!(mf,:text,str)
         end
         function sr_clicked(w)
             #str = pick_file(pwd(),filterlist="jld2");
             if Sys.iswindows()
-                str = pick_file(pwd(),filterlist="jld2");
+                str = pick_file(pwd(),filterlist="jld2")
             elseif Sys.islinux()
                 str=open_dialog("Pick a file",GtkNullContainer(),("*.jld2",))
             end
-            set_gtk_property!(rf,:text,str);
+            set_gtk_property!(rf,:text,str)
         end
         function pm_clicked(w)
             str = get_gtk_property(mf,:text,String)
@@ -2883,16 +2900,48 @@ module rtmsim
             rtmsim.plot_mesh(str,2)
         end
         function ss_clicked(w)
-            str1 = get_gtk_property(mf,:text,String); str2 = get_gtk_property(t,:text,String); str3 = get_gtk_property(par_3,:text,String); str4 = get_gtk_property(par_1,:text,String); str5 = get_gtk_property(par_2,:text,String);
-            str11 = get_gtk_property(p0_1,:text,String); str12 = get_gtk_property(p0_2,:text,String); str13 = get_gtk_property(p0_3,:text,String); str14 = get_gtk_property(p0_4,:text,String); str15 = get_gtk_property(p0_5,:text,String); str16 = get_gtk_property(p0_6,:text,String); str17 = get_gtk_property(p0_7,:text,String);
-            str21 = get_gtk_property(p1_1,:text,String); str22 = get_gtk_property(p1_2,:text,String); str23 = get_gtk_property(p1_3,:text,String); str24 = get_gtk_property(p1_4,:text,String); str25 = get_gtk_property(p1_5,:text,String); str26 = get_gtk_property(p1_6,:text,String); str27 = get_gtk_property(p1_7,:text,String); 
-            str31 = get_gtk_property(p2_1,:text,String); str32 = get_gtk_property(p2_2,:text,String); str33 = get_gtk_property(p2_3,:text,String); str34 = get_gtk_property(p2_4,:text,String); str35 = get_gtk_property(p2_5,:text,String); str36 = get_gtk_property(p2_6,:text,String); str37 = get_gtk_property(p2_7,:text,String);
-            str41 = get_gtk_property(p3_1,:text,String); str42 = get_gtk_property(p3_2,:text,String); str43 = get_gtk_property(p3_3,:text,String); str44 = get_gtk_property(p3_4,:text,String); str45 = get_gtk_property(p3_5,:text,String); str46 = get_gtk_property(p3_6,:text,String); str47 = get_gtk_property(p3_7,:text,String); 
-            str51 = get_gtk_property(p4_1,:text,String); str52 = get_gtk_property(p4_2,:text,String); str53 = get_gtk_property(p4_3,:text,String); str54 = get_gtk_property(p4_4,:text,String); str55 = get_gtk_property(p4_5,:text,String); str56 = get_gtk_property(p4_6,:text,String); str57 = get_gtk_property(p4_7,:text,String);
-            if [get_gtk_property(b,:active,Bool) for b in r1] == [true, false, false, false]; patchtype1val=Int64(0);    elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, true, false, false]; patchtype1val=Int64(1);    elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, false, true, false]; patchtype1val=Int64(3);    elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, false, false, true]; patchtype1val=Int64(2); end;
-            if [get_gtk_property(b,:active,Bool) for b in r2] == [true, false, false, false]; patchtype2val=Int64(0);    elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, true, false, false]; patchtype2val=Int64(1);    elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, false, true, false]; patchtype2val=Int64(3);    elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, false, false, true]; patchtype2val=Int64(2); end;
-            if [get_gtk_property(b,:active,Bool) for b in r3] == [true, false, false, false]; patchtype3val=Int64(0);    elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, true, false, false]; patchtype3val=Int64(1);    elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, false, true, false]; patchtype3val=Int64(3);    elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, false, false, true]; patchtype3val=Int64(2); end;
-            if [get_gtk_property(b,:active,Bool) for b in r4] == [true, false, false, false]; patchtype4val=Int64(0);    elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, true, false, false]; patchtype4val=Int64(1);    elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, false, true, false]; patchtype4val=Int64(3);    elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, false, false, true]; patchtype4val=Int64(2); end;
+            str1 = get_gtk_property(mf,:text,String); str2 = get_gtk_property(t,:text,String); str3 = get_gtk_property(par_3,:text,String); str4 = get_gtk_property(par_1,:text,String); str5 = get_gtk_property(par_2,:text,String)
+            str11 = get_gtk_property(p0_1,:text,String); str12 = get_gtk_property(p0_2,:text,String); str13 = get_gtk_property(p0_3,:text,String); str14 = get_gtk_property(p0_4,:text,String); str15 = get_gtk_property(p0_5,:text,String); str16 = get_gtk_property(p0_6,:text,String); str17 = get_gtk_property(p0_7,:text,String)
+            str21 = get_gtk_property(p1_1,:text,String); str22 = get_gtk_property(p1_2,:text,String); str23 = get_gtk_property(p1_3,:text,String); str24 = get_gtk_property(p1_4,:text,String); str25 = get_gtk_property(p1_5,:text,String); str26 = get_gtk_property(p1_6,:text,String); str27 = get_gtk_property(p1_7,:text,String) 
+            str31 = get_gtk_property(p2_1,:text,String); str32 = get_gtk_property(p2_2,:text,String); str33 = get_gtk_property(p2_3,:text,String); str34 = get_gtk_property(p2_4,:text,String); str35 = get_gtk_property(p2_5,:text,String); str36 = get_gtk_property(p2_6,:text,String); str37 = get_gtk_property(p2_7,:text,String)
+            str41 = get_gtk_property(p3_1,:text,String); str42 = get_gtk_property(p3_2,:text,String); str43 = get_gtk_property(p3_3,:text,String); str44 = get_gtk_property(p3_4,:text,String); str45 = get_gtk_property(p3_5,:text,String); str46 = get_gtk_property(p3_6,:text,String); str47 = get_gtk_property(p3_7,:text,String) 
+            str51 = get_gtk_property(p4_1,:text,String); str52 = get_gtk_property(p4_2,:text,String); str53 = get_gtk_property(p4_3,:text,String); str54 = get_gtk_property(p4_4,:text,String); str55 = get_gtk_property(p4_5,:text,String); str56 = get_gtk_property(p4_6,:text,String); str57 = get_gtk_property(p4_7,:text,String)
+            if [get_gtk_property(b,:active,Bool) for b in r1] == [true, false, false, false] 
+                patchtype1val=Int64(0)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, true, false, false] 
+                patchtype1val=Int64(1)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, false, true, false] 
+                patchtype1val=Int64(3)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, false, false, true] 
+                patchtype1val=Int64(2) 
+            end
+            if [get_gtk_property(b,:active,Bool) for b in r2] == [true, false, false, false] 
+                patchtype2val=Int64(0)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, true, false, false] 
+                patchtype2val=Int64(1)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, false, true, false] 
+                patchtype2val=Int64(3)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, false, false, true] 
+                patchtype2val=Int64(2) 
+            end
+            if [get_gtk_property(b,:active,Bool) for b in r3] == [true, false, false, false] 
+                patchtype3val=Int64(0)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, true, false, false] 
+                patchtype3val=Int64(1)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, false, true, false]
+                patchtype3val=Int64(3)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, false, false, true] 
+                patchtype3val=Int64(2) 
+            end
+            if [get_gtk_property(b,:active,Bool) for b in r4] == [true, false, false, false] 
+                patchtype4val=Int64(0)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, true, false, false]
+                patchtype4val=Int64(1)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, false, true, false]
+                patchtype4val=Int64(3)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, false, false, true] 
+                patchtype4val=Int64(2) 
+            end
             str61="0.01"; #str61 = get_gtk_property(r,:text,String)
             restartval=Int64(0); interactiveval=Int64(0); noutval=Int64(16); 
             rtmsim.rtmsim_rev1(1,str1,parse(Float64,str2), 1.01325e5,1.225,1.4,parse(Float64,str3), parse(Float64,str4),parse(Float64,str5), parse(Float64,str11),
@@ -2910,61 +2959,157 @@ module rtmsim
             str31 = get_gtk_property(p2_1,:text,String); str32 = get_gtk_property(p2_2,:text,String); str33 = get_gtk_property(p2_3,:text,String); str34 = get_gtk_property(p2_4,:text,String); str35 = get_gtk_property(p2_5,:text,String); str36 = get_gtk_property(p2_6,:text,String); str37 = get_gtk_property(p2_7,:text,String);
             str41 = get_gtk_property(p3_1,:text,String); str42 = get_gtk_property(p3_2,:text,String); str43 = get_gtk_property(p3_3,:text,String); str44 = get_gtk_property(p3_4,:text,String); str45 = get_gtk_property(p3_5,:text,String); str46 = get_gtk_property(p3_6,:text,String); str47 = get_gtk_property(p3_7,:text,String); 
             str51 = get_gtk_property(p4_1,:text,String); str52 = get_gtk_property(p4_2,:text,String); str53 = get_gtk_property(p4_3,:text,String); str54 = get_gtk_property(p4_4,:text,String); str55 = get_gtk_property(p4_5,:text,String); str56 = get_gtk_property(p4_6,:text,String); str57 = get_gtk_property(p4_7,:text,String);
-            if [get_gtk_property(b,:active,Bool) for b in r1] == [true, false, false, false]; patchtype1val=Int64(0);    elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, true, false, false]; patchtype1val=Int64(1);    elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, false, true, false]; patchtype1val=Int64(3);    elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, false, false, true]; patchtype1val=Int64(2); end;
-            if [get_gtk_property(b,:active,Bool) for b in r2] == [true, false, false, false]; patchtype2val=Int64(0);    elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, true, false, false]; patchtype2val=Int64(1);    elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, false, true, false]; patchtype2val=Int64(3);    elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, false, false, true]; patchtype2val=Int64(2); end;
-            if [get_gtk_property(b,:active,Bool) for b in r3] == [true, false, false, false]; patchtype3val=Int64(0);    elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, true, false, false]; patchtype3val=Int64(1);    elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, false, true, false]; patchtype3val=Int64(3);    elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, false, false, true]; patchtype3val=Int64(2); end;
-            if [get_gtk_property(b,:active,Bool) for b in r4] == [true, false, false, false]; patchtype4val=Int64(0);    elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, true, false, false]; patchtype4val=Int64(1);    elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, false, true, false]; patchtype4val=Int64(3);    elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, false, false, true]; patchtype4val=Int64(2); end;
+            if [get_gtk_property(b,:active,Bool) for b in r1] == [true, false, false, false] 
+                patchtype1val=Int64(0)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, true, false, false] 
+                patchtype1val=Int64(1)   
+            elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, false, true, false] 
+                patchtype1val=Int64(3)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, false, false, true] 
+                patchtype1val=Int64(2) 
+            end
+            if [get_gtk_property(b,:active,Bool) for b in r2] == [true, false, false, false] 
+                patchtype2val=Int64(0)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, true, false, false] 
+                patchtype2val=Int64(1)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, false, true, false] 
+                patchtype2val=Int64(3)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, false, false, true] 
+                patchtype2val=Int64(2) 
+            end
+            if [get_gtk_property(b,:active,Bool) for b in r3] == [true, false, false, false] 
+                patchtype3val=Int64(0)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, true, false, false] 
+                patchtype3val=Int64(1)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, false, true, false] 
+                patchtype3val=Int64(3)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, false, false, true] 
+                patchtype3val=Int64(2) 
+            end
+            if [get_gtk_property(b,:active,Bool) for b in r4] == [true, false, false, false] 
+                patchtype4val=Int64(0)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, true, false, false] 
+                patchtype4val=Int64(1)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, false, true, false] 
+                patchtype4val=Int64(3)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, false, false, true] 
+                patchtype4val=Int64(2) 
+            end
             str61="0.01"; #str61 = get_gtk_property(r,:text,String)
-            restartval=Int64(1); interactiveval=Int64(0); noutval=Int64(16); 
+            restartval=Int64(1); interactiveval=Int64(0); noutval=Int64(16)
             rtmsim.rtmsim_rev1(1,str1,parse(Float64,str2), 1.01325e5,1.225,1.4,parse(Float64,str3), parse(Float64,str4),parse(Float64,str5), parse(Float64,str11),
             parse(Float64,str12),parse(Float64,str13),parse(Float64,str14),parse(Float64,str15),parse(Float64,str16),parse(Float64,str17),
             parse(Float64,str21),parse(Float64,str22),parse(Float64,str23),parse(Float64,str24),parse(Float64,str25),parse(Float64,str26),parse(Float64,str27), 
             parse(Float64,str31),parse(Float64,str32),parse(Float64,str33),parse(Float64,str34),parse(Float64,str35),parse(Float64,str36),parse(Float64,str37),
             parse(Float64,str41),parse(Float64,str42),parse(Float64,str43),parse(Float64,str44),parse(Float64,str45),parse(Float64,str46),parse(Float64,str47),
             parse(Float64,str51),parse(Float64,str52),parse(Float64,str53),parse(Float64,str54),parse(Float64,str55),parse(Float64,str56),parse(Float64,str57),
-            patchtype1val,patchtype2val,patchtype3val,patchtype4val, restartval,"results.jld2", interactiveval,parse(Float64,str61), noutval);
+            patchtype1val,patchtype2val,patchtype3val,patchtype4val, restartval,"results.jld2", interactiveval,parse(Float64,str61), noutval)
         end
         function si_clicked(w)
-            str1 = get_gtk_property(mf,:text,String); str2 = get_gtk_property(t,:text,String); str3 = get_gtk_property(par_3,:text,String); str4 = get_gtk_property(par_1,:text,String); str5 = get_gtk_property(par_2,:text,String);
-            str11 = get_gtk_property(p0_1,:text,String); str12 = get_gtk_property(p0_2,:text,String); str13 = get_gtk_property(p0_3,:text,String); str14 = get_gtk_property(p0_4,:text,String); str15 = get_gtk_property(p0_5,:text,String); str16 = get_gtk_property(p0_6,:text,String); str17 = get_gtk_property(p0_7,:text,String);
-            str21 = get_gtk_property(p1_1,:text,String); str22 = get_gtk_property(p1_2,:text,String); str23 = get_gtk_property(p1_3,:text,String); str24 = get_gtk_property(p1_4,:text,String); str25 = get_gtk_property(p1_5,:text,String); str26 = get_gtk_property(p1_6,:text,String); str27 = get_gtk_property(p1_7,:text,String); 
-            str31 = get_gtk_property(p2_1,:text,String); str32 = get_gtk_property(p2_2,:text,String); str33 = get_gtk_property(p2_3,:text,String); str34 = get_gtk_property(p2_4,:text,String); str35 = get_gtk_property(p2_5,:text,String); str36 = get_gtk_property(p2_6,:text,String); str37 = get_gtk_property(p2_7,:text,String);
-            str41 = get_gtk_property(p3_1,:text,String); str42 = get_gtk_property(p3_2,:text,String); str43 = get_gtk_property(p3_3,:text,String); str44 = get_gtk_property(p3_4,:text,String); str45 = get_gtk_property(p3_5,:text,String); str46 = get_gtk_property(p3_6,:text,String); str47 = get_gtk_property(p3_7,:text,String); 
-            str51 = get_gtk_property(p4_1,:text,String); str52 = get_gtk_property(p4_2,:text,String); str53 = get_gtk_property(p4_3,:text,String); str54 = get_gtk_property(p4_4,:text,String); str55 = get_gtk_property(p4_5,:text,String); str56 = get_gtk_property(p4_6,:text,String); str57 = get_gtk_property(p4_7,:text,String);
-            if [get_gtk_property(b,:active,Bool) for b in r1] == [true, false, false, false]; patchtype1val=Int64(0);    elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, true, false, false]; patchtype1val=Int64(1);    elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, false, true, false]; patchtype1val=Int64(3);    elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, false, false, true]; patchtype1val=Int64(2); end;
-            if [get_gtk_property(b,:active,Bool) for b in r2] == [true, false, false, false]; patchtype2val=Int64(0);    elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, true, false, false]; patchtype2val=Int64(1);    elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, false, true, false]; patchtype2val=Int64(3);    elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, false, false, true]; patchtype2val=Int64(2); end;
-            if [get_gtk_property(b,:active,Bool) for b in r3] == [true, false, false, false]; patchtype3val=Int64(0);    elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, true, false, false]; patchtype3val=Int64(1);    elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, false, true, false]; patchtype3val=Int64(3);    elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, false, false, true]; patchtype3val=Int64(2); end;
-            if [get_gtk_property(b,:active,Bool) for b in r4] == [true, false, false, false]; patchtype4val=Int64(0);    elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, true, false, false]; patchtype4val=Int64(1);    elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, false, true, false]; patchtype4val=Int64(3);    elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, false, false, true]; patchtype4val=Int64(2); end;
+            str1 = get_gtk_property(mf,:text,String); str2 = get_gtk_property(t,:text,String); str3 = get_gtk_property(par_3,:text,String); str4 = get_gtk_property(par_1,:text,String); str5 = get_gtk_property(par_2,:text,String)
+            str11 = get_gtk_property(p0_1,:text,String); str12 = get_gtk_property(p0_2,:text,String); str13 = get_gtk_property(p0_3,:text,String); str14 = get_gtk_property(p0_4,:text,String); str15 = get_gtk_property(p0_5,:text,String); str16 = get_gtk_property(p0_6,:text,String); str17 = get_gtk_property(p0_7,:text,String)
+            str21 = get_gtk_property(p1_1,:text,String); str22 = get_gtk_property(p1_2,:text,String); str23 = get_gtk_property(p1_3,:text,String); str24 = get_gtk_property(p1_4,:text,String); str25 = get_gtk_property(p1_5,:text,String); str26 = get_gtk_property(p1_6,:text,String); str27 = get_gtk_property(p1_7,:text,String) 
+            str31 = get_gtk_property(p2_1,:text,String); str32 = get_gtk_property(p2_2,:text,String); str33 = get_gtk_property(p2_3,:text,String); str34 = get_gtk_property(p2_4,:text,String); str35 = get_gtk_property(p2_5,:text,String); str36 = get_gtk_property(p2_6,:text,String); str37 = get_gtk_property(p2_7,:text,String)
+            str41 = get_gtk_property(p3_1,:text,String); str42 = get_gtk_property(p3_2,:text,String); str43 = get_gtk_property(p3_3,:text,String); str44 = get_gtk_property(p3_4,:text,String); str45 = get_gtk_property(p3_5,:text,String); str46 = get_gtk_property(p3_6,:text,String); str47 = get_gtk_property(p3_7,:text,String) 
+            str51 = get_gtk_property(p4_1,:text,String); str52 = get_gtk_property(p4_2,:text,String); str53 = get_gtk_property(p4_3,:text,String); str54 = get_gtk_property(p4_4,:text,String); str55 = get_gtk_property(p4_5,:text,String); str56 = get_gtk_property(p4_6,:text,String); str57 = get_gtk_property(p4_7,:text,String)
+            if [get_gtk_property(b,:active,Bool) for b in r1] == [true, false, false, false]
+                patchtype1val=Int64(0)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, true, false, false] 
+                patchtype1val=Int64(1)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, false, true, false] 
+                patchtype1val=Int64(3)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, false, false, true] 
+                patchtype1val=Int64(2) 
+            end
+            if [get_gtk_property(b,:active,Bool) for b in r2] == [true, false, false, false] 
+                patchtype2val=Int64(0)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, true, false, false] 
+                patchtype2val=Int64(1)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, false, true, false] 
+                patchtype2val=Int64(3)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, false, false, true] 
+                patchtype2val=Int64(2) 
+            end
+            if [get_gtk_property(b,:active,Bool) for b in r3] == [true, false, false, false] 
+                patchtype3val=Int64(0)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, true, false, false] 
+                patchtype3val=Int64(1)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, false, true, false] 
+                patchtype3val=Int64(3)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, false, false, true] 
+                patchtype3val=Int64(2) 
+            end
+            if [get_gtk_property(b,:active,Bool) for b in r4] == [true, false, false, false] 
+                patchtype4val=Int64(0)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, true, false, false] 
+                patchtype4val=Int64(1)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, false, true, false] 
+                patchtype4val=Int64(3)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, false, false, true] 
+                patchtype4val=Int64(2) 
+            end
             str61 = get_gtk_property(r,:text,String)
-            restartval=Int64(0); interactiveval=Int64(2); noutval=Int64(16); 
+            restartval=Int64(0); interactiveval=Int64(2); noutval=Int64(16) 
             rtmsim.rtmsim_rev1(1,str1,parse(Float64,str2), 1.01325e5,1.225,1.4,parse(Float64,str3), parse(Float64,str4),parse(Float64,str5), parse(Float64,str11),
             parse(Float64,str12),parse(Float64,str13),parse(Float64,str14),parse(Float64,str15),parse(Float64,str16),parse(Float64,str17),
             parse(Float64,str21),parse(Float64,str22),parse(Float64,str23),parse(Float64,str24),parse(Float64,str25),parse(Float64,str26),parse(Float64,str27), 
             parse(Float64,str31),parse(Float64,str32),parse(Float64,str33),parse(Float64,str34),parse(Float64,str35),parse(Float64,str36),parse(Float64,str37),
             parse(Float64,str41),parse(Float64,str42),parse(Float64,str43),parse(Float64,str44),parse(Float64,str45),parse(Float64,str46),parse(Float64,str47),
             parse(Float64,str51),parse(Float64,str52),parse(Float64,str53),parse(Float64,str54),parse(Float64,str55),parse(Float64,str56),parse(Float64,str57),
-            patchtype1val,patchtype2val,patchtype3val,patchtype4val, restartval,"results.jld2", interactiveval,parse(Float64,str61), noutval);
+            patchtype1val,patchtype2val,patchtype3val,patchtype4val, restartval,"results.jld2", interactiveval,parse(Float64,str61), noutval)
         end
         function ci_clicked(w)
-            str1 = get_gtk_property(mf,:text,String); str2 = get_gtk_property(t,:text,String); str3 = get_gtk_property(par_3,:text,String); str4 = get_gtk_property(par_1,:text,String); str5 = get_gtk_property(par_2,:text,String);
-            str11 = get_gtk_property(p0_1,:text,String); str12 = get_gtk_property(p0_2,:text,String); str13 = get_gtk_property(p0_3,:text,String); str14 = get_gtk_property(p0_4,:text,String); str15 = get_gtk_property(p0_5,:text,String); str16 = get_gtk_property(p0_6,:text,String); str17 = get_gtk_property(p0_7,:text,String);
-            str21 = get_gtk_property(p1_1,:text,String); str22 = get_gtk_property(p1_2,:text,String); str23 = get_gtk_property(p1_3,:text,String); str24 = get_gtk_property(p1_4,:text,String); str25 = get_gtk_property(p1_5,:text,String); str26 = get_gtk_property(p1_6,:text,String); str27 = get_gtk_property(p1_7,:text,String); 
-            str31 = get_gtk_property(p2_1,:text,String); str32 = get_gtk_property(p2_2,:text,String); str33 = get_gtk_property(p2_3,:text,String); str34 = get_gtk_property(p2_4,:text,String); str35 = get_gtk_property(p2_5,:text,String); str36 = get_gtk_property(p2_6,:text,String); str37 = get_gtk_property(p2_7,:text,String);
-            str41 = get_gtk_property(p3_1,:text,String); str42 = get_gtk_property(p3_2,:text,String); str43 = get_gtk_property(p3_3,:text,String); str44 = get_gtk_property(p3_4,:text,String); str45 = get_gtk_property(p3_5,:text,String); str46 = get_gtk_property(p3_6,:text,String); str47 = get_gtk_property(p3_7,:text,String); 
-            str51 = get_gtk_property(p4_1,:text,String); str52 = get_gtk_property(p4_2,:text,String); str53 = get_gtk_property(p4_3,:text,String); str54 = get_gtk_property(p4_4,:text,String); str55 = get_gtk_property(p4_5,:text,String); str56 = get_gtk_property(p4_6,:text,String); str57 = get_gtk_property(p4_7,:text,String);
-            if [get_gtk_property(b,:active,Bool) for b in r1] == [true, false, false, false]; patchtype1val=Int64(0);    elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, true, false, false]; patchtype1val=Int64(1);    elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, false, true, false]; patchtype1val=Int64(3);    elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, false, false, true]; patchtype1val=Int64(2); end;
-            if [get_gtk_property(b,:active,Bool) for b in r2] == [true, false, false, false]; patchtype2val=Int64(0);    elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, true, false, false]; patchtype2val=Int64(1);    elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, false, true, false]; patchtype2val=Int64(3);    elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, false, false, true]; patchtype2val=Int64(2); end;
-            if [get_gtk_property(b,:active,Bool) for b in r3] == [true, false, false, false]; patchtype3val=Int64(0);    elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, true, false, false]; patchtype3val=Int64(1);    elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, false, true, false]; patchtype3val=Int64(3);    elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, false, false, true]; patchtype3val=Int64(2); end;
-            if [get_gtk_property(b,:active,Bool) for b in r4] == [true, false, false, false]; patchtype4val=Int64(0);    elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, true, false, false]; patchtype4val=Int64(1);    elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, false, true, false]; patchtype4val=Int64(3);    elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, false, false, true]; patchtype4val=Int64(2); end;
+            str1 = get_gtk_property(mf,:text,String); str2 = get_gtk_property(t,:text,String); str3 = get_gtk_property(par_3,:text,String); str4 = get_gtk_property(par_1,:text,String); str5 = get_gtk_property(par_2,:text,String)
+            str11 = get_gtk_property(p0_1,:text,String); str12 = get_gtk_property(p0_2,:text,String); str13 = get_gtk_property(p0_3,:text,String); str14 = get_gtk_property(p0_4,:text,String); str15 = get_gtk_property(p0_5,:text,String); str16 = get_gtk_property(p0_6,:text,String); str17 = get_gtk_property(p0_7,:text,String)
+            str21 = get_gtk_property(p1_1,:text,String); str22 = get_gtk_property(p1_2,:text,String); str23 = get_gtk_property(p1_3,:text,String); str24 = get_gtk_property(p1_4,:text,String); str25 = get_gtk_property(p1_5,:text,String); str26 = get_gtk_property(p1_6,:text,String); str27 = get_gtk_property(p1_7,:text,String) 
+            str31 = get_gtk_property(p2_1,:text,String); str32 = get_gtk_property(p2_2,:text,String); str33 = get_gtk_property(p2_3,:text,String); str34 = get_gtk_property(p2_4,:text,String); str35 = get_gtk_property(p2_5,:text,String); str36 = get_gtk_property(p2_6,:text,String); str37 = get_gtk_property(p2_7,:text,String)
+            str41 = get_gtk_property(p3_1,:text,String); str42 = get_gtk_property(p3_2,:text,String); str43 = get_gtk_property(p3_3,:text,String); str44 = get_gtk_property(p3_4,:text,String); str45 = get_gtk_property(p3_5,:text,String); str46 = get_gtk_property(p3_6,:text,String); str47 = get_gtk_property(p3_7,:text,String) 
+            str51 = get_gtk_property(p4_1,:text,String); str52 = get_gtk_property(p4_2,:text,String); str53 = get_gtk_property(p4_3,:text,String); str54 = get_gtk_property(p4_4,:text,String); str55 = get_gtk_property(p4_5,:text,String); str56 = get_gtk_property(p4_6,:text,String); str57 = get_gtk_property(p4_7,:text,String)
+            if [get_gtk_property(b,:active,Bool) for b in r1] == [true, false, false, false]
+                patchtype1val=Int64(0)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, true, false, false] 
+                patchtype1val=Int64(1)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, false, true, false] 
+                patchtype1val=Int64(3)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r1] == [false, false, false, true] 
+                patchtype1val=Int64(2) 
+            end
+            if [get_gtk_property(b,:active,Bool) for b in r2] == [true, false, false, false]
+                patchtype2val=Int64(0)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, true, false, false] 
+                patchtype2val=Int64(1)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, false, true, false] 
+                patchtype2val=Int64(3)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r2] == [false, false, false, true] 
+                patchtype2val=Int64(2) 
+            end
+            if [get_gtk_property(b,:active,Bool) for b in r3] == [true, false, false, false] 
+                patchtype3val=Int64(0)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, true, false, false] 
+                patchtype3val=Int64(1)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, false, true, false] 
+                patchtype3val=Int64(3)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r3] == [false, false, false, true] 
+                patchtype3val=Int64(2) 
+            end
+            if [get_gtk_property(b,:active,Bool) for b in r4] == [true, false, false, false] 
+                patchtype4val=Int64(0)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, true, false, false] 
+                patchtype4val=Int64(1)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, false, true, false] 
+                patchtype4val=Int64(3)    
+            elseif [get_gtk_property(b,:active,Bool) for b in r4] == [false, false, false, true] 
+                patchtype4val=Int64(2) 
+            end
             str61 = get_gtk_property(r,:text,String)
-            restartval=Int64(1); interactiveval=Int64(2); noutval=Int64(16); 
+            restartval=Int64(1); interactiveval=Int64(2); noutval=Int64(16) 
             rtmsim.rtmsim_rev1(1,str1,parse(Float64,str2), 1.01325e5,1.225,1.4,parse(Float64,str3), parse(Float64,str4),parse(Float64,str5), parse(Float64,str11),
             parse(Float64,str12),parse(Float64,str13),parse(Float64,str14),parse(Float64,str15),parse(Float64,str16),parse(Float64,str17),
             parse(Float64,str21),parse(Float64,str22),parse(Float64,str23),parse(Float64,str24),parse(Float64,str25),parse(Float64,str26),parse(Float64,str27), 
             parse(Float64,str31),parse(Float64,str32),parse(Float64,str33),parse(Float64,str34),parse(Float64,str35),parse(Float64,str36),parse(Float64,str37),
             parse(Float64,str41),parse(Float64,str42),parse(Float64,str43),parse(Float64,str44),parse(Float64,str45),parse(Float64,str46),parse(Float64,str47),
             parse(Float64,str51),parse(Float64,str52),parse(Float64,str53),parse(Float64,str54),parse(Float64,str55),parse(Float64,str56),parse(Float64,str57),
-            patchtype1val,patchtype2val,patchtype3val,patchtype4val, restartval,"results.jld2", interactiveval,parse(Float64,str61), noutval);
+            patchtype1val,patchtype2val,patchtype3val,patchtype4val, restartval,"results.jld2", interactiveval,parse(Float64,str61), noutval)
         end
         function pr_clicked(w)
             str = get_gtk_property(rf,:text,String)
@@ -2992,7 +3137,7 @@ module rtmsim
             elseif Sys.islinux()
                 str=open_dialog("Pick a file",GtkNullContainer(),("*.txt",))
             end
-            set_gtk_property!(in2,:text,str);
+            set_gtk_property!(in2,:text,str)
         end
         function in3_clicked(w)
             str = get_gtk_property(in2,:text,String)
@@ -3018,7 +3163,7 @@ module rtmsim
         signal_connect(in3_clicked,in3,"clicked")
 
         #show GUI
-        showall(win);
+        showall(win)
         if !isinteractive()
             c = Condition()
             signal_connect(win, :destroy) do widget
